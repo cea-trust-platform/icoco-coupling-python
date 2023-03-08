@@ -9,8 +9,8 @@ def test_pylint():
     """Function to run the use case with pytest"""
 
     root_directory = pathlib.Path(__file__).parent.resolve().parent
-    src_directory = (root_directory / "src")
-    tests_directory =  (root_directory / "tests")
+    src_directory = root_directory / "src"
+    tests_directory =  root_directory / "tests"
 
     files_to_test = [
         str(f) for f in src_directory.glob("**/*.py") if f.is_file()] + [
