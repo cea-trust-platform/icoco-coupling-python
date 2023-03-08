@@ -152,7 +152,7 @@ class ProblemWrapper:
             exception if an invalid path is provided.
         """
 
-        if not pathlib.Path(datafile).exists():
+        if not datafile or not pathlib.Path(datafile).exists():
             raise WrongArgument(prob=self._impl.problem_name,
                                 method="setDataFile",
                                 arg="datafile",
