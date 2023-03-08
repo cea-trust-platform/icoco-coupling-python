@@ -51,6 +51,7 @@ function generate_sphinx(){
     local options="--no-makefile --no-batchfile --quiet --no-sep"
     local options="${options} --extensions=sphinx.ext.napoleon --extensions=sphinx_rtd_theme --extensions=myst_parser --extensions=numpydoc"
     local options="${options} --ext-autodoc --ext-intersphinx --ext-doctest --ext-viewcode"
+    local options="${options} --templatedir ${project_doc_dir}/templates"
     sphinx-quickstart --project ${project_name} -v ${project_version} --author ${project_author} ${options} .
     if (( $? > 0 )); then
         echo "failed: sphinx-quickstart --project ${project_name} -v ${project_version} --author ${project_author} ${options} ."
@@ -65,13 +66,6 @@ function generate_sphinx(){
 
     sed -i 's/Contents\:/Contents\:\n\n   md_doc\/introduction.md/' ${doc_build_dir}/index.rst
 
-    # use a rtd theme
-    sed -i 's/alabaster/sphinx_rtd_theme/' ${doc_build_dir}/conf.py
-
-    echo "${custom_conf_options}" >> ${doc_build_dir}/conf.py
-    echo "intersphinx_mapping['mpi4py'] = ('https://mpi4py.readthedocs.io/en/stable/', None)" >> ${doc_build_dir}/conf.py
-    echo "intersphinx_mapping['numpy'] = ('https://docs.scipy.org/doc/numpy/', None)" >> ${doc_build_dir}/conf.py
-    echo "autodoc_mock_imports = ['medcoupling']" >> ${doc_build_dir}/conf.py
 }
 
 function build_html(){
