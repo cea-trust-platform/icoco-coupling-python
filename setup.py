@@ -95,7 +95,7 @@ setup(
         "Intended Audience :: Developers",
         "Topic :: Scientific/Engineering :: Physics",
         # Pick your license as you wish
-        "License :: OSI Approved :: BSD 2-Clause 'Simplified License' (BSD-2-Clause)",
+        "License :: OSI Approved :: BSD License",
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate you support Python 3. These classifiers are *not*
         # checked by 'pip install'. See instead 'python_requires' below.
