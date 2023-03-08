@@ -13,10 +13,10 @@ See :class:`icoco.problem.Problem` to start with.
 
 """
 
-import os
+import pathlib as _pathlib
 
-with open(os.path.join(os.path.dirname(__file__), "VERSION"), encoding="utf-8") as file:
-    __version__ = file.read().strip()
+__version__ = (_pathlib.Path(__file__).parent.resolve() / "VERSION").read_text(
+    encoding="utf-8").strip()
 
 from .utils import ICOCO_VERSION, ICOCO_MAJOR_VERSION, ICOCO_MINOR_VERSION, ValueType, medcoupling
 

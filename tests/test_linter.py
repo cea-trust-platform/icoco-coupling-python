@@ -1,6 +1,5 @@
 """Run linters"""
 
-import os
 import pathlib
 
 import pytest
@@ -9,16 +8,16 @@ import pytest
 def test_pylint():
     """Function to run the use case with pytest"""
 
-    root_directory = os.path.realpath(os.path.dirname(os.path.dirname(__file__)))
-    src_directory = os.path.join(root_directory, "src")
-    tests_directory = os.path.join(root_directory, "tests")
+    root_directory = pathlib.Path(__file__).parent.resolve().parent
+    src_directory = (root_directory / "src")
+    tests_directory =  (root_directory / "tests")
 
     files_to_test = [
-        str(f) for f in pathlib.Path(src_directory).glob("**/*.py") if f.is_file()] + [
-        str(f) for f in pathlib.Path(tests_directory).glob("**/*.py") if f.is_file()]
+        str(f) for f in src_directory.glob("**/*.py") if f.is_file()] + [
+        str(f) for f in tests_directory.glob("**/*.py") if f.is_file()]
 
     print("Files to check:\n    {}".format(
-        "\n    ".join([path.replace(root_directory + "/", "") for path in files_to_test])))
+        "\n    ".join([path.replace(str(root_directory) + "/", "") for path in files_to_test])))
 
     try:
         from pylint.lint import Run as PylintRunner  # pylint: disable=import-outside-toplevel
