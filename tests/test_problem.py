@@ -10,10 +10,12 @@ import pytest
 
 import icoco
 
+
 def test_static_methods():
     """Tests static methods of the package"""
 
     assert icoco.Problem.GetICoCoMajorVersion() == 2
+
 
 def _test_raises_not_implemented(implem: icoco.Problem):  # pylint: disable=too-many-statements
     """Tests that not implemented do raise icoco.NotImplementedMethod"""
@@ -94,45 +96,53 @@ def _test_raises_not_implemented(implem: icoco.Problem):  # pylint: disable=too-
     with pytest.raises(expected_exception=icoco.NotImplementedMethod):
         implem.getOutputStringValue(name="")
 
+
+class Minimal(icoco.Problem):
+    """Minimal implementation of ICoCo"""
+
+    def __init__(self) -> None:
+        super().__init__()
+        self._time: float = 0.0
+        self._dt: float = 0.0
+        self._stat: bool = False
+
+    def initialize(self) -> bool:
+        self._time: float = 0.0
+        self._dt: float = 0.0
+        self._stat: bool = False
+        return True
+
+    def terminate(self) -> None:
+        pass
+
+    def presentTime(self) -> float:
+        return self._time
+
+    def computeTimeStep(self) -> Tuple[float, bool]:
+        return (0.1, False)
+
+    def initTimeStep(self, dt: float) -> bool:
+        self._dt = dt
+        return True
+
+    def solveTimeStep(self) -> bool:
+        print(f"Solver from t={self._time} to t+dt={self._time + self._dt}")
+        return True
+
+    def validateTimeStep(self) -> None:
+        self._time += self._dt
+
+    def setStationaryMode(self, stationaryMode: bool) -> None:
+        self._stat = stationaryMode
+
+    def getStationaryMode(self) -> bool:
+        return self._stat
+
+
 # Test functions are expected to start with 'test_' prefix
 def test_minimal_api():
     # Test description:
     """Tests minimal implementation of ICoCo from the module."""
-
-    class Minimal(icoco.Problem):
-        """Minimal implementation of ICoCo"""
-
-        def __init__(self) -> None:
-            super().__init__()
-            self._time: float = 0.0
-            self._dt: float = 0.0
-            self._stat: bool = False
-
-        def initialize(self) -> bool:
-            self._time: float = 0.0
-            self._dt: float = 0.0
-            self._stat: bool = False
-            return True
-        def terminate(self) -> None:
-            pass
-
-        def presentTime(self) -> float:
-            return self._time
-        def computeTimeStep(self) -> Tuple[float, bool]:
-            return (0.1, False)
-        def initTimeStep(self, dt: float) -> bool:
-            self._dt = dt
-            return True
-        def solveTimeStep(self) -> bool:
-            print(f"Solver from t={self._time} to t+dt={self._time + self._dt}")
-            return True
-        def validateTimeStep(self) -> None:
-            self._time += self._dt
-
-        def setStationaryMode(self, stationaryMode: bool) -> None:
-            self._stat = stationaryMode
-        def getStationaryMode(self) -> bool:
-            return self._stat
 
     minimal = Minimal()
 

@@ -6,6 +6,7 @@
 
 import icoco
 
+
 def test_utils():
     """Tests utils sub package"""
 

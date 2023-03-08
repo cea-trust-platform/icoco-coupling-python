@@ -10,6 +10,7 @@ import pytest
 
 import icoco
 
+
 def test_context():
     """Tests ProblemWrapper.Context class"""
 
@@ -41,10 +42,12 @@ def test_context():
     assert context.dt == 0.0
     assert context.time == 30.0
 
+
 def test_static_methods():
     """Tests static methods of the package"""
 
     assert icoco.ProblemWrapper.GetICoCoMajorVersion() == 2
+
 
 def _raise_outside_time_step(implem: icoco.ProblemWrapper):
     """Test raise WrongContext outside time step"""
@@ -176,6 +179,7 @@ def _raises_before_initialize(implem: icoco.ProblemWrapper):  # pylint: disable=
     with pytest.raises(expected_exception=icoco.WrongContext):
         implem.terminate()
 
+
 class Minimal(icoco.Problem):
     """Minimal implementation of ICoCo"""
 
@@ -190,26 +194,33 @@ class Minimal(icoco.Problem):
         self._dt: float = 0.0
         self._stat: bool = False
         return True
+
     def terminate(self) -> None:
         pass
 
     def presentTime(self) -> float:
         return self._time
+
     def computeTimeStep(self) -> Tuple[float, bool]:
         return (0.1, False)
+
     def initTimeStep(self, dt: float) -> bool:
         self._dt = dt
         return True
+
     def solveTimeStep(self) -> bool:
         print(f"Solver from t={self._time} to t+dt={self._time + self._dt}")
         return True
+
     def validateTimeStep(self) -> None:
         self._time += self._dt
 
     def setStationaryMode(self, stationaryMode: bool) -> None:
         self._stat = stationaryMode
+
     def getStationaryMode(self) -> bool:
         return self._stat
+
 
 # Test functions are expected to start with 'test_' prefix
 def test_minimal_api():
@@ -231,7 +242,6 @@ def test_minimal_api():
         minimal.setDataFile(__file__)
     with pytest.raises(expected_exception=icoco.WrongContext):
         minimal.setDataFile(__file__)
-
 
     with pytest.raises(expected_exception=icoco.NotImplementedMethod):
         minimal.setMPIComm(icoco.utils.MPIComm())
@@ -275,7 +285,6 @@ def test_minimal_api():
 
     assert minimal.presentTime() == 10.0
 
-
     minimal.initTimeStep(dt=dt)
     minimal.solveTimeStep()
     with pytest.raises(expected_exception=icoco.NotImplementedMethod):
@@ -288,6 +297,7 @@ def test_minimal_api():
 
     minimal.terminate()
 
+
 def _test_save_restore_forget(implem: icoco.Problem):
 
     with pytest.raises(expected_exception=icoco.NotImplementedMethod):
@@ -296,6 +306,7 @@ def _test_save_restore_forget(implem: icoco.Problem):
         implem.restore(label=0, method="")
     with pytest.raises(expected_exception=icoco.NotImplementedMethod):
         implem.forget(label=0, method="")
+
 
 def _test_raises_not_implemented_without_context(implem: icoco.Problem):  # pylint: disable=too-many-statements
     """Tests that not implemented do raise icoco.NotImplementedMethod"""
