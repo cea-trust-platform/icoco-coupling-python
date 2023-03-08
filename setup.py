@@ -85,35 +85,34 @@ setup(
     # Classifiers help users find your project by categorizing it.
     #
     # For a list of valid classifiers, see https://pypi.org/classifiers/
-    # classifiers=[  # Optional
-    #     # How mature is this project? Common values are
-    #     #   3 - Alpha
-    #     #   4 - Beta
-    #     #   5 - Production/Stable
-    #     "Development Status :: 3 - Alpha",
-    #     # Indicate who your project is intended for
-    #     "Intended Audience :: Developers",
-    #     "Topic :: Software Development :: Build Tools",
-    #     # Pick your license as you wish
-    #     "License :: OSI Approved :: MIT License",
-    #     # Specify the Python versions you support here. In particular, ensure
-    #     # that you indicate you support Python 3. These classifiers are *not*
-    #     # checked by 'pip install'. See instead 'python_requires' below.
-    #     "Programming Language :: Python :: 3",
-    #     "Programming Language :: Python :: 3.6",
-    #     "Programming Language :: Python :: 3.7",
-    #     "Programming Language :: Python :: 3.8",
-    #     "Programming Language :: Python :: 3.9",
-    #     "Programming Language :: Python :: 3.10",
-    #     "Programming Language :: Python :: 3 :: Only",
-    # ],
+    classifiers=[  # Optional
+        # How mature is this project? Common values are
+        #   3 - Alpha
+        #   4 - Beta
+        #   5 - Production/Stable
+        "Development Status :: 3 - Alpha",
+        # Indicate who your project is intended for
+        "Intended Audience :: Developers",
+        "Topic :: Scientific/Engineering :: Physics",
+        # Pick your license as you wish
+        "License :: OSI Approved :: BSD 2-Clause 'Simplified License' (BSD-2-Clause)",
+        # Specify the Python versions you support here. In particular, ensure
+        # that you indicate you support Python 3. These classifiers are *not*
+        # checked by 'pip install'. See instead 'python_requires' below.
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+    ],
     # This field adds keywords for your project which will appear on the
     # project page. What does your project relate to?
     #
     # Note that this is a list of additional keywords, separated
     # by commas, to be used to assist searching for the distribution in a
     # larger catalog.
-    keywords="couping, salome, c3po",  # Optional
+    keywords="couping, medcoupling, salome, c3po",  # Optional
     # When your source code is in a subdirectory under the project root, e.g.
     # `src/`, it is necessary to specify the `package_dir` argument.
     package_dir={"": "src"},  # Optional
