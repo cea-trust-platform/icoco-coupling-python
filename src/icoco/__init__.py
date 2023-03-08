@@ -18,9 +18,13 @@ import pathlib as _pathlib
 __version__ = (_pathlib.Path(__file__).parent.resolve() / "VERSION").read_text(
     encoding="utf-8").strip()
 
-from .utils import ICOCO_VERSION, ICOCO_MAJOR_VERSION, ICOCO_MINOR_VERSION, ValueType, medcoupling
+__copyright__ = '2023, CEA'
+__author__ = 'CEA'
 
-from .exception import WrongContext, WrongArgument, NotImplementedMethod
+from .utils import (ICOCO_VERSION, ICOCO_MAJOR_VERSION, ICOCO_MINOR_VERSION,
+                    ValueType, medcoupling)  # noqa: F401
 
-from .problem_wrapper import ProblemWrapper
-from .problem import Problem
+from .exception import WrongContext, WrongArgument, NotImplementedMethod  # noqa: F401
+
+from .problem_wrapper import ProblemWrapper  # noqa: F401
+from .problem import Problem  # noqa: F401

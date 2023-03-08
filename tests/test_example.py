@@ -7,6 +7,7 @@
 
 import icoco as appli
 
+
 # Test functions are expected to start with 'test_' prefix
 def test_version():
     # Test description:

@@ -104,7 +104,7 @@ def test_minimal_api(minimal_problem):
 
     minimal.initialize()
 
-    assert minimal.problem_name == "Minimal"
+    assert minimal.problem_name == "MinimalProblem"
 
     assert minimal.presentTime() == 0.0
 

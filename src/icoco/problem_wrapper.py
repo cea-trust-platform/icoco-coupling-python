@@ -107,8 +107,6 @@ class ProblemWrapper:
     # ******************************************************
     # section Problem
     # ******************************************************
-
-
     def __init__(self, impl: Problem) -> None:
         """Constructor.
 
@@ -261,8 +259,6 @@ class ProblemWrapper:
     # ******************************************************
     # section TimeStepManagement
     # ******************************************************
-
-
     def presentTime(self) -> float:
         """(Mandatory) Return the current time of the simulation.
 
@@ -773,8 +769,6 @@ class ProblemWrapper:
     # section Field I/O. Reminder: all methods are **optional**
     # not all of them need to be implemented!
     # ******************************************************
-
-
     def getInputFieldsNames(self) -> List[str]:
         """(Optional) Get the list of input fields accepted by the code.
 

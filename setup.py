@@ -153,14 +153,14 @@ setup(
         "docs": ["psutil==5.9.4",
                  "sphinx-rtd-theme==1.1.1",
                  "myst-parser==0.16.1",
-                 "numpydoc==1.1.0",],
+                 "numpydoc==1.1.0", ],
         "test": ["psutil==5.9.4",
                  "pylint>=2.13.9",
                  "pytest>=7.0.1",
                  "pytest-cov>=4.0.0",
                  "pytest-html>=3.2.0",
                  "pytest-sugar>=0.9.6",
-                 "pytest-xdist>=3.0.2",],
+                 "pytest-xdist>=3.0.2", ],
     },
     # If there are data files included in your packages that need to be
     # installed, specify them here.

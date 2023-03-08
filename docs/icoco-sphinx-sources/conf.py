@@ -17,11 +17,12 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'icoco'
-copyright = '2023, CEA'
-author = 'CEA'
-
 import icoco
+
+
+project = icoco.__name__
+copyright = icoco.__copyright__
+author = icoco.__author__
 
 # The short X.Y version
 version = icoco.__version__

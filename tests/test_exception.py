@@ -8,6 +8,7 @@ import pytest
 
 import icoco
 
+
 def test_exception():
     """Tests exception sub package"""
 
@@ -24,4 +25,4 @@ def test_exception():
 
     with pytest.raises(expected_exception=icoco.NotImplementedMethod):
         raise icoco.exception.NotImplementedMethod(prob="NotImplementedMethodPb",
-                                           method="test_exception")
+                                                   method="test_exception")
