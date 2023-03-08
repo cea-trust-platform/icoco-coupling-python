@@ -16,7 +16,7 @@ from typing import List, Tuple
 
 from icoco.utils import ICOCO_MAJOR_VERSION, ValueType, MPIComm # type: ignore
 try:
-    from icoco.utils import medcoupling
+    from icoco.utils import medcoupling # pylint: disable=unused-import
 except ImportError:
     pass
 from icoco.exception import NotImplementedMethod
@@ -165,7 +165,6 @@ class Problem(ABC):
         WrongContext
             exception if called multiple times or after initialize().
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="initialize")
 
     @abstractmethod
     def terminate(self) -> None:
@@ -182,7 +181,6 @@ class Problem(ABC):
             exception if called before initialize() or after terminate().
             exception if called inside the TIME_STEP_DEFINED context (see Problem documentation).
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="terminate")
 
     # ******************************************************
     # section TimeStepManagement
@@ -205,7 +203,6 @@ class Problem(ABC):
         WrongContext
             exception if called before initialize() or after terminate().
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="presentTime")
 
     @abstractmethod
     def computeTimeStep(self) -> Tuple[float, bool]:
@@ -235,7 +232,6 @@ class Problem(ABC):
             exception if called before initialize() or after terminate().
             exception if called inside the TIME_STEP_DEFINED context (see Problem documentation).
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="computeTimeStep")
 
     @abstractmethod
     def initTimeStep(self, dt: float) -> bool:
@@ -266,7 +262,6 @@ class Problem(ABC):
         WrongArgument
             exception if dt is invalid (dt < 0.0).
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="initTimeStep")
 
     @abstractmethod
     def solveTimeStep(self) -> bool:
@@ -288,7 +283,6 @@ class Problem(ABC):
             exception exception if called several times without a call to validateTimeStep() or to
             abortTimeStep().
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="solveTimeStep")
 
     @abstractmethod
     def validateTimeStep(self) -> None:
@@ -308,7 +302,6 @@ class Problem(ABC):
             exception if called outside the TIME_STEP_DEFINED context (see Problem documentation).
             exception if called before the solveTimeStep() method.
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="validateTimeStep")
 
     @abstractmethod
     def setStationaryMode(self, stationaryMode: bool) -> None:
@@ -333,7 +326,6 @@ class Problem(ABC):
             called inside the TIME_STEP_DEFINED context (see Problem documentation).
             called before initialize() or after terminate().
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="setStationaryMode")
 
     @abstractmethod
     def getStationaryMode(self) -> bool:
@@ -356,7 +348,6 @@ class Problem(ABC):
             exception if called before initialize() or after terminate().
             exception if called inside the TIME_STEP_DEFINED context (see Problem documentation).
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="getStationaryMode")
 
     def isStationary(self) -> bool:
         """(Optional) Return whether the solution is constant on the computation time step.
@@ -622,7 +613,7 @@ class Problem(ABC):
         """
         raise NotImplementedMethod(prob=self.problem_name, method="getFieldUnit")
 
-    def getInputMEDDoubleFieldTemplate(self, name: str) -> 'medcoupling.MEDCouplingFieldDouble':
+    def getInputMEDDoubleFieldTemplate(self, name: str) -> medcoupling.MEDCouplingFieldDouble:
         """(Optional) Retrieve an empty shell for an input field. This shell can be filled by the
         caller and then be given to the code via setInputField(). The field has the MEDDoubleField
         format.
@@ -658,7 +649,9 @@ class Problem(ABC):
         """
         raise NotImplementedMethod(prob=self.problem_name, method="getInputMEDDoubleFieldTemplate")
 
-    def setInputMEDDoubleField(self, name: str, afield: 'medcoupling.MEDCouplingFieldDouble') -> None:
+    def setInputMEDDoubleField(self,
+                               name: str,
+                               afield: medcoupling.MEDCouplingFieldDouble) -> None:
         """(Optional) Provide the code with input data in the form of a MEDDoubleField.
 
         The method getInputFieldTemplate(), if implemented, may be used first to prepare an empty
@@ -687,7 +680,7 @@ class Problem(ABC):
         """
         raise NotImplementedMethod(prob=self.problem_name, method="setInputMEDDoubleField")
 
-    def getOutputMEDDoubleField(self, name: str) -> 'medcoupling.MEDCouplingFieldDouble':
+    def getOutputMEDDoubleField(self, name: str) -> medcoupling.MEDCouplingFieldDouble:
         """(Optional) Retrieve output data from the code in the form of a MEDDoubleField.
 
         Gets the output field corresponding to name from the code into the afield argument.
@@ -718,7 +711,7 @@ class Problem(ABC):
 
     def updateOutputMEDDoubleField(self,
                                    name: str,
-                                   afield: 'medcoupling.MEDCouplingFieldDouble') -> None:
+                                   afield: medcoupling.MEDCouplingFieldDouble) -> None:
         """(Optional) Update a previously retrieved output field.
 
         (New in version 2) This methods allows the code to implement a more efficient update of a
@@ -749,7 +742,7 @@ class Problem(ABC):
         """
         raise NotImplementedMethod(prob=self.problem_name, method="updateOutputMEDDoubleField")
 
-    def getInputMEDIntFieldTemplate(self, name: str) -> 'medcoupling.MEDCouplingFieldInt':
+    def getInputMEDIntFieldTemplate(self, name: str) -> medcoupling.MEDCouplingFieldInt:
         """Similar to getInputMEDDoubleFieldTemplate() but for MEDIntField.
 
         See Also
@@ -775,7 +768,7 @@ class Problem(ABC):
         """
         raise NotImplementedMethod(prob=self.problem_name, method="getInputMEDIntFieldTemplate")
 
-    def setInputMEDIntField(self, name: str, afield: 'medcoupling.MEDCouplingFieldInt') -> None:
+    def setInputMEDIntField(self, name: str, afield: medcoupling.MEDCouplingFieldInt) -> None:
         """Similar to setInputMEDDoubleField() but for MEDIntField.
 
         See Also
@@ -800,7 +793,7 @@ class Problem(ABC):
         """
         raise NotImplementedMethod(prob=self.problem_name, method="setInputMEDIntField")
 
-    def getOutputMEDIntField(self, name: str) -> 'medcoupling.MEDCouplingFieldInt':
+    def getOutputMEDIntField(self, name: str) -> medcoupling.MEDCouplingFieldInt:
         """Similar to getOutputMEDDoubleField() but for MEDIntField.
 
         See Also
@@ -827,7 +820,7 @@ class Problem(ABC):
         raise NotImplementedMethod(prob=self.problem_name, method="getOutputMEDIntField")
     def updateOutputMEDIntField(self,
                                    name: str,
-                                   afield: 'medcoupling.MEDCouplingFieldInt') -> None:
+                                   afield: medcoupling.MEDCouplingFieldInt) -> None:
         """Similar to getInputMEDDoubleFieldTemplate() but for MEDStringField.
 
         See Also
@@ -852,7 +845,7 @@ class Problem(ABC):
         raise NotImplementedMethod(prob=self.problem_name, method="updateOutputMEDIntField")
 
 
-    def getInputMEDStringFieldTemplate(self, name: str) -> 'medcoupling.MEDCouplingField':
+    def getInputMEDStringFieldTemplate(self, name: str) -> medcoupling.MEDCouplingField:
         """Similar to getInputMEDDoubleFieldTemplate() but for MEDStringField.
 
         Warning
@@ -870,7 +863,7 @@ class Problem(ABC):
 
         Returns
         -------
-        medcoupling.MEDCouplingFieldString
+        medcoupling.MEDCouplingField
             field object
 
         Raises
@@ -882,7 +875,7 @@ class Problem(ABC):
         """
         raise NotImplementedMethod(prob=self.problem_name, method="getInputMEDStringFieldTemplate")
 
-    def setInputMEDStringField(self, name: str, afield: 'medcoupling.MEDCouplingField') -> None:
+    def setInputMEDStringField(self, name: str, afield: medcoupling.MEDCouplingField) -> None:
         """Similar to setInputMEDDoubleField() but for MEDStringField.
 
         Warning
@@ -897,7 +890,7 @@ class Problem(ABC):
         ----------
         name : str
             name of the field that is given to the code.
-        afield : medcoupling.MEDCouplingFieldString
+        afield : medcoupling.MEDCouplingField
             field object
 
         Raises
@@ -911,7 +904,7 @@ class Problem(ABC):
         """
         raise NotImplementedMethod(prob=self.problem_name, method="setInputMEDStringField")
 
-    def getOutputMEDStringField(self, name: str) -> 'medcoupling.MEDCouplingField':
+    def getOutputMEDStringField(self, name: str) -> medcoupling.MEDCouplingField:
         """Similar to getOutputMEDDoubleField() but for MEDStringField.
 
         Warning
@@ -929,7 +922,7 @@ class Problem(ABC):
 
         Returns
         -------
-        medcoupling.MEDCouplingFieldString
+        medcoupling.MEDCouplingField
             field object
 
         Raises
@@ -942,7 +935,7 @@ class Problem(ABC):
         raise NotImplementedMethod(prob=self.problem_name, method="getOutputMEDStringField")
     def updateOutputMEDStringField(self,
                                    name: str,
-                                   afield: 'medcoupling.MEDCouplingField') -> None:
+                                   afield: medcoupling.MEDCouplingField) -> None:
         """Similar to getInputMEDDoubleFieldTemplate() but for MEDStringField.
 
         Warning
@@ -957,7 +950,7 @@ class Problem(ABC):
         ----------
         name : str
             name of the field that the caller requests from the code.
-        afield : medcoupling.MEDCouplingFieldString
+        afield : medcoupling.MEDCouplingField
             field object
 
         Raises

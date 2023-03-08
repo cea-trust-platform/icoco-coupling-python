@@ -15,7 +15,7 @@ See :class:`icoco.problem.Problem` to start with.
 
 import os
 
-with open(os.path.join(os.path.dirname(__file__), "VERSION")) as file:
+with open(os.path.join(os.path.dirname(__file__), "VERSION"), encoding="utf-8") as file:
     __version__ = file.read().strip()
 
 from .utils import ICOCO_VERSION, ICOCO_MAJOR_VERSION, ICOCO_MINOR_VERSION, ValueType

@@ -16,6 +16,14 @@ except ImportError:
     import warnings
     warnings.warn(message="medcoupling module not found",
                   category=ImportWarning)
+    class medcoupling:
+        """dummy class for type hinting"""
+        class MEDCouplingFieldDouble:
+            """dummy class for MEDCouplingFieldDouble type hinting"""
+        class MEDCouplingFieldInt:
+            """dummy class for MEDCouplingFieldInt type hinting"""
+        class MEDCouplingField:
+            """dummy class for MEDCouplingField type hinting"""
 
 ICOCO_VERSION="2.0"
 ICOCO_MAJOR_VERSION=2

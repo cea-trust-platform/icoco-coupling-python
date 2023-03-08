@@ -11,12 +11,10 @@ def test_pylint():
 
     root_directory = os.path.realpath(os.path.dirname(os.path.dirname(__file__)))
     src_directory = os.path.join(root_directory, "src")
-    use_cases_directory = os.path.join(root_directory, "use_cases")
     tests_directory = os.path.join(root_directory, "tests")
 
     files_to_test = [
         str(f) for f in pathlib.Path(src_directory).glob("**/*.py") if f.is_file()] + [
-        str(f) for f in pathlib.Path(use_cases_directory).glob("**/*.py") if f.is_file()] + [
         str(f) for f in pathlib.Path(tests_directory).glob("**/*.py") if f.is_file()]
 
     print("Files to check:\n    {}".format(

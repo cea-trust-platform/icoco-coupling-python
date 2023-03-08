@@ -5,15 +5,27 @@
 # import pytest
 
 
+import pytest
 from typing import Tuple
-import icoco as appli
+
+import icoco
+
+def test_static_methods():
+    """Tests static methods of the package"""
+
+    # Assert to check if test is ok
+    assert icoco.ICOCO_VERSION == '2.0'
+    assert icoco.ICOCO_MAJOR_VERSION == 2
+    assert icoco.ICOCO_MINOR_VERSION == 0
+
+    assert icoco.Problem.GetICoCoMajorVersion() == 2
 
 # Test functions are expected to start with 'test_' prefix
 def test_minimal_api():
     # Test description:
     """Tests minimal implementation of ICoCo from the module."""
 
-    class Minimal(appli.Problem):
+    class Minimal(icoco.Problem):
         """Minimal implementation of ICoCo"""
 
         def __init__(self) -> None:
@@ -52,6 +64,8 @@ def test_minimal_api():
 
     minimal.initialize()
 
+    assert minimal.problem_name == "Minimal"
+
     assert minimal.presentTime() == 0.0
 
     dt, _ = minimal.computeTimeStep()
@@ -64,7 +78,83 @@ def test_minimal_api():
 
     assert minimal.presentTime() == dt
 
-    minimal.terminate()
 
-    # Assert to check if test is ok
-    assert appli.ICOCO_VERSION == '2.0'
+    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+        minimal.setDataFile("")
+    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+        minimal.setMPIComm(None)
+    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+        minimal.isStationary()
+    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+        minimal.abortTimeStep()
+    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+        minimal.resetTime(time=0.0)
+    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+        minimal.iterateTimeStep()
+    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+        minimal.save(label=0, method="")
+    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+        minimal.restore(label=0, method="")
+    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+        minimal.forget(label=0, method="")
+    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+        minimal.getInputFieldsNames()
+    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+        minimal.getOutputFieldsNames()
+    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+        minimal.getFieldType(name="")
+    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+        minimal.getMeshUnit()
+    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+        minimal.getFieldUnit(name="")
+    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+        minimal.getInputMEDDoubleFieldTemplate(name="")
+    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+        minimal.setInputMEDDoubleField(name="", afield=None)
+    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+        minimal.getOutputMEDDoubleField(name="")
+    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+        minimal.updateOutputMEDDoubleField(name="", afield=None)
+    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+        minimal.getInputMEDIntFieldTemplate(name="")
+    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+        minimal.setInputMEDIntField(name="", afield=None)
+    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+        minimal.getOutputMEDIntField(name="")
+    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+        minimal.updateOutputMEDIntField(name="", afield=None)
+    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+        minimal.getInputMEDStringFieldTemplate(name="")
+    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+        minimal.setInputMEDStringField(name="", afield=None)
+    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+        minimal.getOutputMEDStringField(name="")
+    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+        minimal.updateOutputMEDStringField(name="", afield=None)
+    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+        minimal.getMEDCouplingMajorVersion()
+    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+        minimal.isMEDCoupling64Bits()
+    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+        minimal.getInputValuesNames()
+    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+        minimal.getOutputValuesNames()
+    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+        minimal.getValueType(name="")
+    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+        minimal.getValueUnit(name="")
+    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+        minimal.setInputDoubleValue(name="", val=0.0)
+    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+        minimal.getOutputDoubleValue(name="")
+    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+        minimal.setInputIntValue(name="", val=0)
+    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+        minimal.getOutputIntValue(name="")
+    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+        minimal.setInputStringValue(name="", val="")
+    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+        minimal.getOutputStringValue(name="")
+
+
+    minimal.terminate()

@@ -2,13 +2,11 @@
     "python.autoComplete.extraPaths": [
         "${workspaceFolder}/environment-icoco/lib/python3.6/site-packages/",
         "${workspaceFolder}/src",
-        "${workspaceFolder}/use_cases",
         "/home/prerequis_codes-public/install/lin-x86-64-cen7/native/SALOME-9.8.0/MEDCOUPLING/lib/python3.6/site-packages/"
     ],
     "python.analysis.extraPaths": [
         "${workspaceFolder}/environment-icoco/lib/python3.6/site-packages/",
         "${workspaceFolder}/src",
-        "${workspaceFolder}/use_cases",
         "/home/prerequis_codes-public/install/lin-x86-64-cen7/native/SALOME-9.8.0/MEDCOUPLING/lib/python3.6/site-packages/"
     ],
     "python.analysis.typeCheckingMode": "off",

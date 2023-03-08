@@ -14,7 +14,7 @@ from typing import List, Tuple
 
 from icoco.utils import ICOCO_MAJOR_VERSION, ValueType, MPIComm # type: ignore
 try:
-    from icoco.utils import medcoupling
+    from icoco.utils import medcoupling # pylint: disable=unused-import
 except ImportError:
     pass
 from icoco.exception import WrongArgument, WrongContext
@@ -947,7 +947,9 @@ class ProblemWrapper:
 
         return self._impl.getInputMEDDoubleFieldTemplate(name)
 
-    def setInputMEDDoubleField(self, name: str, afield: 'medcoupling.MEDCouplingFieldDouble') -> None:
+    def setInputMEDDoubleField(self,
+                               name: str,
+                               afield: 'medcoupling.MEDCouplingFieldDouble') -> None:
         """(Optional) Provide the code with input data in the form of a MEDDoubleField.
 
         The method getInputFieldTemplate(), if implemented, may be used first to prepare an empty

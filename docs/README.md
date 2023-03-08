@@ -4,7 +4,7 @@ This is a basic tool to build sphinx documentation.
 
 ## Quick start guide
 
-Run **[generate_doc.sh](generate_doc.sh)** to produce full documentation of **src** and **use_cases**.
+Run **[generate_doc.sh](generate_doc.sh)** to produce full documentation of **src**.
 
 ## Options
 

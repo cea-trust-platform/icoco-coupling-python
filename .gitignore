@@ -8,7 +8,6 @@ dist/
 
 # test files
 .pytest_cache/
-use_cases/results/
 *.result.json
 .coverage*
 
