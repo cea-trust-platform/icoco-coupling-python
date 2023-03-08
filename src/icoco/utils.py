@@ -11,18 +11,18 @@ https://github.com/cea-trust-platform/icoco-coupling
 from enum import Enum
 
 try:
-    import medcoupling # pylint: disable=unused-import
-except ImportError:
+    import medcoupling  # pylint: disable=unused-import
+except ImportError:  # pragma: no cover
     import warnings
     warnings.warn(message="medcoupling module not found",
                   category=ImportWarning)
-    class medcoupling:
+    class medcoupling:  # pylint: disable=too-few-public-methods, invalid-name
         """dummy class for type hinting"""
-        class MEDCouplingFieldDouble:
+        class MEDCouplingFieldDouble:  # pylint: disable=too-few-public-methods
             """dummy class for MEDCouplingFieldDouble type hinting"""
-        class MEDCouplingFieldInt:
+        class MEDCouplingFieldInt:  # pylint: disable=too-few-public-methods
             """dummy class for MEDCouplingFieldInt type hinting"""
-        class MEDCouplingField:
+        class MEDCouplingField:  # pylint: disable=too-few-public-methods
             """dummy class for MEDCouplingField type hinting"""
 
 ICOCO_VERSION="2.0"
@@ -40,7 +40,7 @@ class ValueType(Enum):
     """String scalar value or field type"""
 
 try:
-    from mpi4py.MPI import Intracomm as MPIComm # type: ignore # pylint: disable=unused-import
-except ModuleNotFoundError:
-    class MPIComm: # pylint: disable=too-few-public-methods
+    from mpi4py.MPI import Intracomm as MPIComm # type: ignore  # pylint: disable=unused-import
+except ModuleNotFoundError:  # pragma: no cover
+    class MPIComm:  # pylint: disable=too-few-public-methods
         """Basic class for type hinting when mi4py is not available"""

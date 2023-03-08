@@ -14,11 +14,7 @@ This module contains the API for ICoCo specifications
 from abc import ABC, abstractmethod
 from typing import List, Tuple
 
-from icoco.utils import ICOCO_MAJOR_VERSION, ValueType, MPIComm # type: ignore
-try:
-    from icoco.utils import medcoupling # pylint: disable=unused-import
-except ImportError:
-    pass
+from icoco.utils import ICOCO_MAJOR_VERSION, ValueType, MPIComm, medcoupling # type: ignore
 from icoco.exception import NotImplementedMethod
 
 class Problem(ABC):

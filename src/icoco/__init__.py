@@ -18,11 +18,7 @@ import os
 with open(os.path.join(os.path.dirname(__file__), "VERSION"), encoding="utf-8") as file:
     __version__ = file.read().strip()
 
-from .utils import ICOCO_VERSION, ICOCO_MAJOR_VERSION, ICOCO_MINOR_VERSION, ValueType
-try:
-    from .utils import medcoupling
-except ImportError:
-    pass
+from .utils import ICOCO_VERSION, ICOCO_MAJOR_VERSION, ICOCO_MINOR_VERSION, ValueType, medcoupling
 
 from .exception import WrongContext, WrongArgument, NotImplementedMethod
 

@@ -12,11 +12,7 @@ It supports proper management of the TIME_STEP_CONTEXT and scope of usage of the
 import os
 from typing import List, Tuple
 
-from icoco.utils import ICOCO_MAJOR_VERSION, ValueType, MPIComm # type: ignore
-try:
-    from icoco.utils import medcoupling # pylint: disable=unused-import
-except ImportError:
-    pass
+from icoco.utils import ICOCO_MAJOR_VERSION, ValueType, MPIComm, medcoupling # type: ignore
 from icoco.exception import WrongArgument, WrongContext
 from icoco.problem import Problem
 
@@ -154,24 +150,21 @@ class ProblemWrapper:
         icoco.WrongArgument
             exception if an invalid path is provided.
         """
-
         if not os.path.exists(datafile):
             raise WrongArgument(prob=self._impl.problem_name,
                                 method="setDataFile",
                                 arg="datafile",
                                 condition="invalid path is provided",
                                 )
-
         if self._context:
             raise WrongContext(prob=self._impl.problem_name,
                                method="setDataFile",
                                precondition="called after initialize()")
-
         if self._data_file is not None:
             raise WrongContext(prob=self._impl.problem_name,
                                method="setDataFile",
                                precondition="called multiple times")
-
+        self._data_file = datafile
         self._impl.setDataFile(datafile)
 
     def setMPIComm(self, mpicomm: MPIComm) -> None:
@@ -193,17 +186,15 @@ class ProblemWrapper:
         icoco.WrongArgument
             exception if an invalid path is provided.
         """
-
         if self._context:
             raise WrongContext(prob=self._impl.problem_name,
                                method="setMPIComm",
                                precondition="called after initialize()")
-
         if self._mpicomm is not None:
             raise WrongContext(prob=self._impl.problem_name,
                                method="setMPIComm",
                                precondition="called multiple times")
-
+        self._mpicomm = mpicomm
         self._impl.setMPIComm(mpicomm)
 
     def initialize(self) -> bool:
@@ -250,7 +241,6 @@ class ProblemWrapper:
             exception if called before initialize() or after terminate().
             exception if called inside the TIME_STEP_DEFINED context (see Problem documentation).
         """
-
         if not self._context:
             raise WrongContext(prob=self._impl.problem_name,
                                method="terminate",
@@ -290,12 +280,10 @@ class ProblemWrapper:
         WrongContext
             exception if called before initialize() or after terminate().
         """
-
         if not self._context:
             raise WrongContext(prob=self._impl.problem_name,
                                method="presentTime",
                                precondition="called before initialize() or after terminate()")
-
         return self._context.time
 
     def computeTimeStep(self) -> Tuple[float, bool]:
@@ -491,8 +479,8 @@ class ProblemWrapper:
                                precondition="called inside the TIME_STEP_DEFINED context."
                                             " (see Problem documentation)")
 
-        self._impl.setStationaryMode(stationaryMode=stationaryMode)
         self._context.set_stationnary(stationnary=stationaryMode)
+        self._impl.setStationaryMode(stationaryMode=stationaryMode)
 
     def getStationaryMode(self) -> bool:
         """(Mandatory) Indicate whether the code should compute a stationary solution or a
@@ -745,7 +733,7 @@ class ProblemWrapper:
                                precondition="called inside the TIME_STEP_DEFINED context."
                                             " (see Problem documentation)")
 
-        self.restore(label=label, method=method)
+        self._impl.restore(label=label, method=method)
 
     def forget(self, label: int, method: str) -> None:
         """(Optional) Discard a previously saved state of the code.
@@ -776,7 +764,7 @@ class ProblemWrapper:
                                method="forget",
                                precondition="called before initialize() or after terminate()")
 
-        self.forget(label=label, method=method)
+        self._impl.forget(label=label, method=method)
 
 
     # ******************************************************
@@ -905,7 +893,7 @@ class ProblemWrapper:
     #     subsection MED*Field fields I/O
     # ******************************************************
 
-    def getInputMEDDoubleFieldTemplate(self, name: str) -> 'medcoupling.MEDCouplingFieldDouble':
+    def getInputMEDDoubleFieldTemplate(self, name: str) -> medcoupling.MEDCouplingFieldDouble:
         """(Optional) Retrieve an empty shell for an input field. This shell can be filled by the
         caller and then be given to the code via setInputField(). The field has the MEDDoubleField
         format.
@@ -949,7 +937,7 @@ class ProblemWrapper:
 
     def setInputMEDDoubleField(self,
                                name: str,
-                               afield: 'medcoupling.MEDCouplingFieldDouble') -> None:
+                               afield: medcoupling.MEDCouplingFieldDouble) -> None:
         """(Optional) Provide the code with input data in the form of a MEDDoubleField.
 
         The method getInputFieldTemplate(), if implemented, may be used first to prepare an empty
@@ -985,7 +973,7 @@ class ProblemWrapper:
         return self._impl.setInputMEDDoubleField(name=name, afield=afield)
 
 
-    def getOutputMEDDoubleField(self, name: str) -> 'medcoupling.MEDCouplingFieldDouble':
+    def getOutputMEDDoubleField(self, name: str) -> medcoupling.MEDCouplingFieldDouble:
         """(Optional) Retrieve output data from the code in the form of a MEDDoubleField.
 
         Gets the output field corresponding to name from the code into the afield argument.
@@ -1020,7 +1008,7 @@ class ProblemWrapper:
 
     def updateOutputMEDDoubleField(self,
                                    name: str,
-                                   afield: 'medcoupling.MEDCouplingFieldDouble') -> None:
+                                   afield: medcoupling.MEDCouplingFieldDouble) -> None:
         """(Optional) Update a previously retrieved output field.
 
         (New in version 2) This methods allows the code to implement a more efficient update of a
@@ -1055,7 +1043,7 @@ class ProblemWrapper:
                                precondition="called before initialize() or after terminate()")
         return self._impl.updateOutputMEDDoubleField(name=name, afield=afield)
 
-    def getInputMEDIntFieldTemplate(self, name: str) -> 'medcoupling.MEDCouplingFieldInt':
+    def getInputMEDIntFieldTemplate(self, name: str) -> medcoupling.MEDCouplingFieldInt:
         """Similar to getInputMEDDoubleFieldTemplate() but for MEDIntField.
 
         See Also
@@ -1086,7 +1074,7 @@ class ProblemWrapper:
 
         return self._impl.getInputMEDIntFieldTemplate(name)
 
-    def setInputMEDIntField(self, name: str, afield: 'medcoupling.MEDCouplingFieldInt') -> None:
+    def setInputMEDIntField(self, name: str, afield: medcoupling.MEDCouplingFieldInt) -> None:
         """Similar to setInputMEDDoubleField() but for MEDIntField.
 
         See Also
@@ -1116,7 +1104,7 @@ class ProblemWrapper:
 
         return self._impl.setInputMEDIntField(name=name, afield=afield)
 
-    def getOutputMEDIntField(self, name: str) -> 'medcoupling.MEDCouplingFieldInt':
+    def getOutputMEDIntField(self, name: str) -> medcoupling.MEDCouplingFieldInt:
         """Similar to getOutputMEDDoubleField() but for MEDIntField.
 
         See Also
@@ -1149,7 +1137,7 @@ class ProblemWrapper:
 
     def updateOutputMEDIntField(self,
                                    name: str,
-                                   afield: 'medcoupling.MEDCouplingFieldInt') -> None:
+                                   afield: medcoupling.MEDCouplingFieldInt) -> None:
         """Similar to getInputMEDDoubleFieldTemplate() but for MEDStringField.
 
         See Also
@@ -1178,7 +1166,7 @@ class ProblemWrapper:
 
         return self._impl.updateOutputMEDIntField(name, afield)
 
-    def getInputMEDStringFieldTemplate(self, name: str) -> 'medcoupling.MEDCouplingField':
+    def getInputMEDStringFieldTemplate(self, name: str) -> medcoupling.MEDCouplingField:
         """Similar to getInputMEDDoubleFieldTemplate() but for MEDStringField.
 
         Warning
@@ -1196,7 +1184,7 @@ class ProblemWrapper:
 
         Returns
         -------
-        medcoupling.MEDCouplingFieldString
+        medcoupling.MEDCouplingField
             object
 
         Raises
@@ -1213,7 +1201,7 @@ class ProblemWrapper:
 
         return self._impl.getInputMEDStringFieldTemplate(name)
 
-    def setInputMEDStringField(self, name: str, afield: 'medcoupling.MEDCouplingField') -> None:
+    def setInputMEDStringField(self, name: str, afield: medcoupling.MEDCouplingField) -> None:
         """Similar to setInputMEDDoubleField() but for MEDStringField.
 
         Warning
@@ -1228,7 +1216,7 @@ class ProblemWrapper:
         ----------
         name : str
             name of the field that is given to the code.
-        afield : medcoupling.MEDCouplingFieldString
+        afield : medcoupling.MEDCouplingField
             field object
 
         Raises
@@ -1247,7 +1235,7 @@ class ProblemWrapper:
 
         return self._impl.setInputMEDStringField(name=name, afield=afield)
 
-    def getOutputMEDStringField(self, name: str) -> 'medcoupling.MEDCouplingField':
+    def getOutputMEDStringField(self, name: str) -> medcoupling.MEDCouplingField:
         """Similar to getOutputMEDDoubleField() but for MEDStringField.
 
         Warning
@@ -1265,7 +1253,7 @@ class ProblemWrapper:
 
         Returns
         -------
-        medcoupling.MEDCouplingFieldString
+        medcoupling.MEDCouplingField
             field object
 
         Raises
@@ -1284,7 +1272,7 @@ class ProblemWrapper:
 
     def updateOutputMEDStringField(self,
                                    name: str,
-                                   afield: 'medcoupling.MEDCouplingField') -> None:
+                                   afield: medcoupling.MEDCouplingField) -> None:
         """Similar to getInputMEDDoubleFieldTemplate() but for MEDStringField.
 
         Warning
@@ -1299,7 +1287,7 @@ class ProblemWrapper:
         ----------
         name : str
             name of the field that the caller requests from the code.
-        afield : medcoupling.MEDCouplingFieldString
+        afield : medcoupling.MEDCouplingField
             field object
 
         Raises
