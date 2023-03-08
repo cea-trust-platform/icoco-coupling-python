@@ -2,6 +2,7 @@
 
 - [ICoCo API - Version 2 (02/2021)](#icoco-api---version-2-022021)
   - [Documentation](#documentation)
+  - [Install](#install)
   - [Developpement environment](#developpement-environment)
   - [Source code](#source-code)
   - [Code testing](#code-testing)
@@ -14,6 +15,14 @@ This project implements ICoCo API in Python based on *medcoupling*.
 See [the documentation of the package](https://icoco-python.readthedocs.io/en/latest/index.html)
 
 See also [the ogirinal documentation](https://github.com/cea-trust-platform/icoco-coupling) for full reference.
+
+## Install
+
+This package is available on [PyPi](https://pypi.org/project/icoco/), so to install a released version:
+
+```sh
+python3 -m pip install icoco
+```
 
 ## Developpement environment
 
