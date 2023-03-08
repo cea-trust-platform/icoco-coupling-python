@@ -60,6 +60,7 @@ class WrongArgument(ValueError):
         super().__init__(f"WrongArgument in Problem instance with name: '{prob}'""\n"
                          f" in method '{method}', argument '{arg}' : {condition}")
 
+
 class NotImplementedMethod(NotImplementedError):
     """Exception raised when one tries to call an ICoCo method which is not implemented.
 

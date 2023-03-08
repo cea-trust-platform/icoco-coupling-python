@@ -12,9 +12,10 @@ It supports proper management of the TIME_STEP_CONTEXT and scope of usage of the
 import os
 from typing import List, Tuple
 
-from icoco.utils import ICOCO_MAJOR_VERSION, ValueType, MPIComm, medcoupling # type: ignore
+from icoco.utils import ICOCO_MAJOR_VERSION, ValueType, MPIComm, medcoupling  # type: ignore
 from icoco.exception import WrongArgument, WrongContext
 from icoco.problem import Problem
+
 
 class ProblemWrapper:
     """Minimal implementation of ICoCo problem."""
@@ -103,10 +104,10 @@ class ProblemWrapper:
             """Returns stationnary mode"""
             return self._stationnary
 
-
     # ******************************************************
     # section Problem
     # ******************************************************
+
 
     def __init__(self, impl: Problem) -> None:
         """Constructor.
@@ -124,13 +125,13 @@ class ProblemWrapper:
 
         self._impl: Problem = impl
 
-        self._data_file: str = None # type: ignore
+        self._data_file: str = None  # type: ignore
         """Argumrent provided to setDataFile method"""
 
-        self._mpicomm: MPIComm = None # type: ignore
+        self._mpicomm: MPIComm = None  # type: ignore
         """Argumrent provided to setMPIComm method"""
 
-        self._context: ProblemWrapper.Context = None # type: ignore
+        self._context: ProblemWrapper.Context = None  # type: ignore
         """Time step management"""
 
     def setDataFile(self, datafile: str) -> None:
@@ -254,11 +255,12 @@ class ProblemWrapper:
 
         self._impl.terminate()
 
-        self._context = None # type: ignore
+        self._context = None  # type: ignore
 
     # ******************************************************
     # section TimeStepManagement
     # ******************************************************
+
 
     def presentTime(self) -> float:
         """(Mandatory) Return the current time of the simulation.
@@ -368,9 +370,9 @@ class ProblemWrapper:
 
         if dt < 0.0:
             raise WrongArgument(prob=self._impl.problem_name,
-                               method="initTimeStep",
-                               arg="dt",
-                               condition=f"dt={dt} is invalid (dt < 0.0)")
+                                method="initTimeStep",
+                                arg="dt",
+                                condition=f"dt={dt} is invalid (dt < 0.0)")
 
         self._context.initialize_step(dt)
 
@@ -766,11 +768,11 @@ class ProblemWrapper:
 
         self._impl.forget(label=label, method=method)
 
-
     # ******************************************************
     # section Field I/O. Reminder: all methods are **optional**
     # not all of them need to be implemented!
     # ******************************************************
+
 
     def getInputFieldsNames(self) -> List[str]:
         """(Optional) Get the list of input fields accepted by the code.
@@ -785,7 +787,6 @@ class ProblemWrapper:
         WrongContext
             exception if called before initialize() or after terminate().
         """
-
         if not self._context:
             raise WrongContext(prob=self._impl.problem_name,
                                method="getInputFieldsNames",
@@ -972,7 +973,6 @@ class ProblemWrapper:
 
         return self._impl.setInputMEDDoubleField(name=name, afield=afield)
 
-
     def getOutputMEDDoubleField(self, name: str) -> medcoupling.MEDCouplingFieldDouble:
         """(Optional) Retrieve output data from the code in the form of a MEDDoubleField.
 
@@ -1136,8 +1136,8 @@ class ProblemWrapper:
         return self._impl.getOutputMEDIntField(name=name)
 
     def updateOutputMEDIntField(self,
-                                   name: str,
-                                   afield: medcoupling.MEDCouplingFieldInt) -> None:
+                                name: str,
+                                afield: medcoupling.MEDCouplingFieldInt) -> None:
         """Similar to getInputMEDDoubleFieldTemplate() but for MEDStringField.
 
         See Also
@@ -1404,7 +1404,6 @@ class ProblemWrapper:
                                precondition="called before initialize() or after terminate()")
 
         return self._impl.getValueType(name=name)
-
 
     def getValueUnit(self, name: str) -> str:
         """(Optional) Get the physical unit used for a given value.

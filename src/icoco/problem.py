@@ -14,8 +14,9 @@ This module contains the API for ICoCo specifications
 from abc import ABC, abstractmethod
 from typing import List, Tuple
 
-from icoco.utils import ICOCO_MAJOR_VERSION, ValueType, MPIComm, medcoupling # type: ignore
+from icoco.utils import ICOCO_MAJOR_VERSION, ValueType, MPIComm, medcoupling  # type: ignore
 from icoco.exception import NotImplementedMethod
+
 
 class Problem(ABC):
     """
@@ -72,7 +73,7 @@ class Problem(ABC):
     # section Problem
     # ******************************************************
 
-    def __init__(self, prob: str = None) -> None: # type: ignore
+    def __init__(self, prob: str = None) -> None:  # type: ignore
         """Constructor.
 
         Notes
@@ -814,9 +815,10 @@ class Problem(ABC):
             exception if the field name ('name' parameter) is invalid.
         """
         raise NotImplementedMethod(prob=self.problem_name, method="getOutputMEDIntField")
+
     def updateOutputMEDIntField(self,
-                                   name: str,
-                                   afield: medcoupling.MEDCouplingFieldInt) -> None:
+                                name: str,
+                                afield: medcoupling.MEDCouplingFieldInt) -> None:
         """Similar to getInputMEDDoubleFieldTemplate() but for MEDStringField.
 
         See Also
@@ -839,7 +841,6 @@ class Problem(ABC):
             exception if the field object is inconsistent with the field being requested.
         """
         raise NotImplementedMethod(prob=self.problem_name, method="updateOutputMEDIntField")
-
 
     def getInputMEDStringFieldTemplate(self, name: str) -> medcoupling.MEDCouplingField:
         """Similar to getInputMEDDoubleFieldTemplate() but for MEDStringField.
@@ -929,6 +930,7 @@ class Problem(ABC):
             exception if the field name ('name' parameter) is invalid.
         """
         raise NotImplementedMethod(prob=self.problem_name, method="getOutputMEDStringField")
+
     def updateOutputMEDStringField(self,
                                    name: str,
                                    afield: medcoupling.MEDCouplingField) -> None:
@@ -958,7 +960,6 @@ class Problem(ABC):
             exception if the field object is inconsistent with the field being requested.
         """
         raise NotImplementedMethod(prob=self.problem_name, method="updateOutputMEDStringField")
-
 
     def getMEDCouplingMajorVersion(self) -> int:
         """(Optional) Get MEDCoupling major version, if the code was built with MEDCoupling support.
@@ -1132,7 +1133,6 @@ class Problem(ABC):
             exception if called before initialize() or after terminate().
         """
         raise NotImplementedMethod(prob=self.problem_name, method="setInputIntValue")
-
 
     def getOutputIntValue(self, name: str) -> int:
         """(Optional) Retrieve a int value from the code.

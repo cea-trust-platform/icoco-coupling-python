@@ -16,6 +16,7 @@ except ImportError:  # pragma: no cover
     import warnings
     warnings.warn(message="medcoupling module not found",
                   category=ImportWarning)
+
     class medcoupling:  # pylint: disable=too-few-public-methods, invalid-name
         """dummy class for type hinting"""
         class MEDCouplingFieldDouble:  # pylint: disable=too-few-public-methods
@@ -25,9 +26,10 @@ except ImportError:  # pragma: no cover
         class MEDCouplingField:  # pylint: disable=too-few-public-methods
             """dummy class for MEDCouplingField type hinting"""
 
-ICOCO_VERSION="2.0"
-ICOCO_MAJOR_VERSION=2
-ICOCO_MINOR_VERSION=0
+ICOCO_VERSION = "2.0"
+ICOCO_MAJOR_VERSION = 2
+ICOCO_MINOR_VERSION = 0
+
 
 class ValueType(Enum):
     """The various possible types for fields or scalar values."""
@@ -39,8 +41,9 @@ class ValueType(Enum):
     String = 2
     """String scalar value or field type"""
 
+
 try:
-    from mpi4py.MPI import Intracomm as MPIComm # type: ignore  # pylint: disable=unused-import
+    from mpi4py.MPI import Intracomm as MPIComm  # type: ignore  # pylint: disable=unused-import
 except ModuleNotFoundError:  # pragma: no cover
     class MPIComm:  # pylint: disable=too-few-public-methods
         """Basic class for type hinting when mi4py is not available"""

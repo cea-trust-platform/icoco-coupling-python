@@ -15,10 +15,12 @@ import pathlib
 
 here = pathlib.Path(__file__).parent.resolve()
 
+
 # Get the long description from the README file
 def get_long_description():
     """Extract README content"""
     return (here / "src" / "README.md").read_text(encoding="utf-8")
+
 
 def get_version():
     """Extract the package's version number from the ``VERSION`` file."""
@@ -26,6 +28,7 @@ def get_version():
 
 # Arguments marked as "Required" below must be included for upload to PyPI.
 # Fields marked as "Optional" may be commented out.
+
 
 setup(
     # This is the name of your project. The first time you publish this
@@ -150,8 +153,7 @@ setup(
         "docs": ["psutil==5.9.4",
                  "sphinx-rtd-theme==1.1.1",
                  "myst-parser==0.16.1",
-                 "numpydoc==1.1.0",
-                ],
+                 "numpydoc==1.1.0",],
         "test": ["psutil==5.9.4",
                  "pylint==2.13.9",
                  "pytest==7.0.1",
