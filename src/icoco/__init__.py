@@ -21,7 +21,7 @@ __version__ = (_pathlib.Path(__file__).parent.resolve() / "VERSION").read_text(
 __copyright__ = '2023, CEA'
 __author__ = 'CEA'
 
-from .utils import (ICOCO_VERSION, ICOCO_MAJOR_VERSION, ICOCO_MINOR_VERSION,
+from .utils import (ICOCO_VERSION, ICOCO_MAJOR_VERSION, ICOCO_MINOR_VERSION,  # noqa: F401
                     ValueType, medcoupling)  # noqa: F401
 
 from .exception import WrongContext, WrongArgument, NotImplementedMethod  # noqa: F401
