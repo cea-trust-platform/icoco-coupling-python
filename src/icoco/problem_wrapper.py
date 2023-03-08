@@ -9,7 +9,7 @@ Warning
 It supports proper management of the TIME_STEP_CONTEXT and scope of usage of the methods.
 """
 
-import os
+import pathlib
 from typing import List, Tuple
 
 from icoco.utils import ICOCO_MAJOR_VERSION, ValueType, MPIComm, medcoupling  # type: ignore
@@ -151,7 +151,8 @@ class ProblemWrapper:
         icoco.WrongArgument
             exception if an invalid path is provided.
         """
-        if not os.path.exists(datafile):
+
+        if not pathlib.Path(datafile).exists():
             raise WrongArgument(prob=self._impl.problem_name,
                                 method="setDataFile",
                                 arg="datafile",
