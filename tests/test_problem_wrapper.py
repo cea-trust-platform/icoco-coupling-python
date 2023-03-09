@@ -24,6 +24,8 @@ def test_context():
     context.set_stationnary(stationnary=True)
     assert context.stationnary
 
+    context.save(label=0, method="")
+
     context.initialize_step(dt=20.0)
     assert context.time_step_defined
     assert context.dt == 20.0
@@ -39,6 +41,9 @@ def test_context():
     assert not context.time_step_defined
     assert context.dt == 0.0
     assert context.time == 30.0
+
+    context.restore(label=0, method="")
+    context.forget(label=0, method="")
 
 
 def test_static_methods():
@@ -179,11 +184,11 @@ def _raises_before_initialize(implem: icoco.ProblemWrapper):  # pylint: disable=
 
 
 # Test functions are expected to start with 'test_' prefix
-def test_minimal_api(minimal_problem):
+def test_minimal_api(save_restore_problem):
     # Test description:
     """Tests minimal implementation of ICoCo from the module."""
 
-    minimal = icoco.ProblemWrapper(minimal_problem)
+    minimal = icoco.ProblemWrapper(save_restore_problem)
 
     assert minimal.GetICoCoMajorVersion() == 2
 
@@ -256,12 +261,22 @@ def test_minimal_api(minimal_problem):
 
 def _test_save_restore_forget(implem: icoco.Problem):
 
-    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
-        implem.save(label=0, method="")
-    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
-        implem.restore(label=0, method="")
-    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
-        implem.forget(label=0, method="")
+    implem.save(label=2, method="memory")
+    time2 = implem.presentTime()
+    stat2 = implem.getStationaryMode()
+    implem.restore(label=1, method="file")
+    assert implem.presentTime() == 100.0
+    assert not implem.getStationaryMode()
+    implem.restore(label=0, method="file")
+    assert implem.presentTime() == 0.0
+    assert implem.getStationaryMode()
+    implem.restore(label=2, method="memory")
+    assert implem.presentTime() == time2
+    assert implem.getStationaryMode() == stat2
+    implem.forget(label=2, method="memory")
+
+    with pytest.raises(expected_exception=icoco.WrongArgument):
+        implem.restore(label=1, method="non existing")
 
 
 def _test_raises_not_implemented_without_context(implem: icoco.Problem):  # pylint: disable=too-many-statements

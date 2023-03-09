@@ -168,19 +168,11 @@ function-naming-style=snake_case
 #function-rgx=
 
 # Good variable names which should always be accepted, separated by a comma.
-good-names=i,
-           j,
-           k,
-           ex,
-           Run,
-           _,
-           dr,
+good-names=_,
            dt,
-           ok,
            Double,
            Int,
            String,
-           TIME_STEP_DEFINED,
            GetICoCoMajorVersion,
            setDataFile,
            setMPIComm,

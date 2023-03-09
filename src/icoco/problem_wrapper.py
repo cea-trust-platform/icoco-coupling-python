@@ -10,7 +10,7 @@ It supports proper management of the TIME_STEP_CONTEXT and scope of usage of the
 """
 
 import pathlib
-from typing import List, Tuple
+from typing import Dict, List, Tuple
 
 from icoco.utils import ICOCO_MAJOR_VERSION, ValueType, MPIComm, medcoupling  # type: ignore
 from icoco.exception import WrongArgument, WrongContext
@@ -44,6 +44,8 @@ class ProblemWrapper:
             """Current context"""
             self._stationnary: bool = False
             """Stationnary mode"""
+            self._states: Dict[Tuple[int, str], Tuple[float, bool]] = {}
+            """Saved states"""
 
         def reset_time(self, time: float):
             """Resets the current time
@@ -77,6 +79,66 @@ class ProblemWrapper:
             """
             self._dt = 0.0
             self._inside = False
+
+        def save(self, label: int, method: str):
+            """Saves current state: time and stationary mode.
+
+            Parameters
+            ----------
+            label : int
+                a user- (or code-) defined value identifying the state.
+            method : str
+                a string specifying which method is used to save the state of the code. A code can
+                    provide different methods (for example in memory, on disk, etc.).
+            """
+            self._states[(label, method)] = (self.time, self.stationnary)
+
+        def is_state(self, label: int, method: str) -> bool:
+            """Tests if state is registered.
+
+            Parameters
+            ----------
+            label : int
+                a user- (or code-) defined value identifying the state.
+            method : str
+                a string specifying which method is used to save the state of the code. A code can
+                    provide different methods (for example in memory, on disk, etc.).
+
+            Returns
+            -------
+            bool
+                True if exists.
+            """
+            return (label, method) in self._states
+
+        def restore(self, label: int, method: str):
+            """Restores state if it exists.
+
+            Parameters
+            ----------
+            label : int
+                a user- (or code-) defined value identifying the state.
+            method : str
+                a string specifying which method is used to save the state of the code. A code can
+                    provide different methods (for example in memory, on disk, etc.).
+            """
+            if self.is_state(label=label, method=method):
+                self._time = self._states[(label, method)][0]
+                self.set_stationnary(self._states[(label, method)][1])
+
+        def forget(self, label: int, method: str):
+            """Forgets state if it exists.
+
+            Parameters
+            ----------
+            label : int
+                a user- (or code-) defined value identifying the state.
+            method : str
+                a string specifying which method is used to save the state of the code. A code can
+                    provide different methods (for example in memory, on disk, etc.).
+            """
+            if self.is_state(label=label, method=method):
+                self._states.pop((label, method))
 
         @property
         def time_step_defined(self) -> bool:
@@ -691,6 +753,7 @@ class ProblemWrapper:
                                precondition="called inside the TIME_STEP_DEFINED context."
                                             " (see Problem documentation)")
 
+        self._context.save(label=label, method=method)
         self._impl.save(label=label, method=method)
 
     def restore(self, label: int, method: str) -> None:
@@ -734,6 +797,12 @@ class ProblemWrapper:
 
         self._impl.restore(label=label, method=method)
 
+        if not self._context.is_state(label=label, method=method):  # restore from previous run
+            self._context.reset_time(time=self._impl.presentTime())
+            self._context.set_stationnary(stationnary=self._impl.getStationaryMode())
+        else:
+            self._context.restore(label=label, method=method)
+
     def forget(self, label: int, method: str) -> None:
         """(Optional) Discard a previously saved state of the code.
 
@@ -763,6 +832,7 @@ class ProblemWrapper:
                                method="forget",
                                precondition="called before initialize() or after terminate()")
 
+        self._context.forget(label, method)
         self._impl.forget(label=label, method=method)
 
     # ******************************************************
