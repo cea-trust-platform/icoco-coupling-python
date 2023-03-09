@@ -105,6 +105,7 @@ prerequisities_packages=(
     numpydoc==1.1.0
     numpy==1.19.5
     mpi4py==3.1.4
+    packaging
 )
 
 #############################
