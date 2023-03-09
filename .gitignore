@@ -9,7 +9,8 @@ dist/
 # test files
 .pytest_cache/
 *.result.json
-.coverage*
+.coverage.*
+.coverage
 
 # doc files
 # docs/*-sphinx-sources
