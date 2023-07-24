@@ -78,7 +78,7 @@ setup(
     #
     # This field corresponds to the "Home-Page" metadata field:
     # https://packaging.python.org/specifications/core-metadata/#home-page-optional
-    url="https://github.com/roland-lenain/ICoCo-python",  # Optional
+    url="https://github.com/code-coupling/ICoCo-python",  # Optional
     # This should be your name or the name of the organization which owns the
     # project.
     author="R. Lenain",  # Optional
@@ -184,8 +184,8 @@ setup(
     # maintainers, and where to support the project financially. The key is
     # what's used to render the link text on PyPI.
     project_urls={  # Optional
-        "Bug Reports": "https://github.com/roland-lenain/ICoCo-python/issues",
+        "Bug Reports": "https://github.com/code-coupling/ICoCo-python/issues",
         "Doc": "https://icoco-python.readthedocs.io/en/latest/index.html",
-        "Source": "https://github.com/roland-lenain/ICoCo-python",
+        "Source": "https://github.com/code-coupling/ICoCo-python",
     },
 )
