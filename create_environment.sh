@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+set -euo pipefail
+unalias -a
+
 # current file can't be sourced
 if [[ "$0" != "${BASH_SOURCE[0]}" ]]; then
     echo "Error! You don't initialize the ICoCo environment with:"
@@ -11,9 +14,10 @@ if [[ "$0" != "${BASH_SOURCE[0]}" ]]; then
     return
 fi
 
-if [[ -n "${VIRTUAL_ENV}" ]]; then
+if [[ -v VIRTUAL_ENV ]]; then
     echo "VIRTUAL_ENV is already defined: ${VIRTUAL_ENV}"
     echo "Deactivate the virtual environment before running this script."
+    exit 1
 fi
 
 ####################################################################################################
@@ -53,8 +57,10 @@ function append_env(){
 }
 
 function load_env(){
-    if [[ -z "${VIRTUAL_ENV}" ]]; then
+    if [[ ! -v VIRTUAL_ENV ]]; then
+        set +u
         . ${venv_directory}/bin/activate # >> /dev/null 2>&1
+        set -u
     fi
     if [[ ! "$(which python)" == *"${venv_directory}/bin"* ]]; then
         echo "$(which python) does not contanins contains: ${venv_directory}/bin"

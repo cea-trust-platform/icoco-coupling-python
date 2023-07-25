@@ -519,6 +519,10 @@ class Problem(ABC):
         """
         raise NotImplementedMethod(prob=self.problem_name, method="forget")
 
+    # ******************************************************
+    # section Field I/O.
+    # Reminder: all methods are **optional** not all of them need to be implemented!
+    # ******************************************************
     def getInputFieldsNames(self) -> List[str]:
         """(Optional) Get the list of input fields accepted by the code.
 

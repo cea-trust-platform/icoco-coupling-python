@@ -30,6 +30,41 @@ ICOCO_VERSION = "2.0"
 ICOCO_MAJOR_VERSION = 2
 ICOCO_MINOR_VERSION = 0
 
+class ICoCoMethods: # pylint: disable=too-few-public-methods
+    """Namespace to list all ICoCo methods."""
+
+    PROBLEM = ["setDataFile", "setMPIComm", "initialize", "terminate"]
+    """ICoco methods of section Problem"""
+
+    TIME_STEP = ["presentTime", "computeTimeStep", "initTimeStep", "solveTimeStep",
+                 "validateTimeStep", "setStationaryMode", "getStationaryMode", "isStationary",
+                 "abortTimeStep", "resetTime", "iterateTimeStep",]
+    """ICoco methods of section TimeStepManagement"""
+
+    RESTORE = ["save", "restore", "forget"]
+    """ICoco methods of section Restorable"""
+
+    IO_FIELD = ["getInputFieldsNames", "getOutputFieldsNames",
+                "getFieldType", "getMeshUnit", "getFieldUnit",
+                "getInputMEDDoubleFieldTemplate", "setInputMEDDoubleField",
+                "getOutputMEDDoubleField", "updateOutputMEDDoubleField",
+                "getInputMEDIntFieldTemplate", "setInputMEDIntField",
+                "getOutputMEDIntField", "updateOutputMEDIntField",
+                "getInputMEDStringFieldTemplate", "setInputMEDStringField",
+                "getOutputMEDStringField", "updateOutputMEDStringField",
+                "getMEDCouplingMajorVersion", "isMEDCoupling64Bits"
+                ]
+    """ICoco methods of section Field I/O"""
+
+    IO_VALUE = ["getInputValuesNames", "getOutputValuesNames", "getValueType", "getValueUnit",
+                "setInputDoubleValue", "getOutputDoubleValue",
+                "setInputIntValue", "getOutputIntValue",
+                "setInputStringValue", "getOutputStringValue"]
+    """ICoco methods of section Scalar values I/O"""
+
+    ALL = ['GetICoCoMajorVersion'] + PROBLEM + TIME_STEP + RESTORE + IO_FIELD + IO_VALUE
+    """All ICoCo methods"""
+
 
 class ValueType(Enum):
     """The various possible types for fields or scalar values."""

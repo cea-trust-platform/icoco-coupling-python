@@ -9,6 +9,7 @@ Submodules
 
    icoco.exception
    icoco.problem
+   icoco.problem_server
    icoco.problem_wrapper
    icoco.utils
 

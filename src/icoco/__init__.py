@@ -26,5 +26,6 @@ from .utils import (ICOCO_VERSION, ICOCO_MAJOR_VERSION, ICOCO_MINOR_VERSION,  # 
 
 from .exception import WrongContext, WrongArgument, NotImplementedMethod  # noqa: F401
 
+from .problem_server import ProblemClient, ServerManager  # noqa: F401
 from .problem_wrapper import ProblemWrapper  # noqa: F401
 from .problem import Problem  # noqa: F401
