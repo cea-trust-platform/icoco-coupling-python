@@ -53,36 +53,56 @@ class RemoteProblem(icoco.Problem):
         return self._stat
 
     def getOutputIntValue(self, name: str) -> int:
+        if name != "pid":
+            raise icoco.exception.WrongArgument(
+                prob=self._problem_name,
+                method="getOutputIntValue",
+                arg=name,
+                condition="Name not in ['pid']")
         return os.getpid()
+
+class RemoteProblem2(RemoteProblem):
+    """Minimal implementation of ICoCo"""
 
 
 # Test functions are expected to start with 'test_' prefix
-def test_minimal_api():
+def test_client():
     # Test description:
-    """Tests minimal implementation of ICoCo from the module."""
+    """Tests server/client implementation of ICoCo from the module."""
 
-    icoco.ServerManager.register('RemoteProblem', RemoteProblem)
-    with pytest.raises(expected_exception=ValueError):
-        icoco.ServerManager.register('RemoteProblem', RemoteProblem)
+    typeid = icoco.ServerManager.register(RemoteProblem)
+    with pytest.raises(expected_exception=ValueError) as error:
+        icoco.ServerManager.register(RemoteProblem)
+    assert "typeid RemoteProblem is already registerd." in str(error.value)
 
-    minimal = icoco.ProblemClient('RemoteProblem')  # pylint: disable=abstract-class-instantiated
+    client = icoco.ProblemClient(typeid)  # pylint: disable=abstract-class-instantiated
 
-    minimal.initialize()
+    client.initialize()
 
-    assert minimal.problem_name == "RemoteProblem"
+    assert client.problem_name == "RemoteProblem"
 
-    assert minimal.presentTime() == 0.0
+    assert client.presentTime() == 0.0
 
-    dt, _ = minimal.computeTimeStep()
+    dt, _ = client.computeTimeStep()
 
-    minimal.initTimeStep(dt=dt)
+    client.initTimeStep(dt=dt)
 
-    minimal.solveTimeStep()
+    client.solveTimeStep()
 
-    minimal.validateTimeStep()
+    client.validateTimeStep()
 
-    assert minimal.presentTime() == dt
+    assert client.presentTime() == dt
 
-    assert minimal.getOutputIntValue('pid') != os.getpid()
+    assert client.getOutputIntValue('pid') != os.getpid()
 
-    minimal.terminate()
+    with pytest.raises(icoco.problem_server.RemoteException) as error:
+        client.getOutputIntValue(name='pod')
+    print(error.value)
+    assert ("RemoteException raised from:\n"
+            "WrongArgument in Problem instance with name: 'RemoteProblem'"
+            " in method 'getOutputIntValue', argument 'pod' : Name not in ['pid']"
+            in str(error.value))
+
+    client.terminate()
+
+    client.__del__()

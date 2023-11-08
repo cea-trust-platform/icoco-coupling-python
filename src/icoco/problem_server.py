@@ -8,6 +8,7 @@ Warning
 """
 
 from multiprocessing.managers import BaseManager
+from typing import Type
 
 from icoco.utils import ICoCoMethods
 from icoco.problem import Problem
@@ -17,17 +18,48 @@ class ServerManager(BaseManager):
     """Class to register remote ``Problem``."""
 
     @classmethod
-    def register(cls, typeid: str, *args, **kwargs):
+    def register(cls, class_type: Type, *args, **kwargs) -> str:  # pylint: disable=arguments-differ
+        """Register a remote class.
+
+        Parameters
+        ----------
+        class_type : Type
+            Class to use on server side.
+
+        Returns
+        -------
+        str
+            typeid to use as the ``ProblemClient`` argument.
+
+        Raises
+        ------
+        ValueError
+            if class is already registerd
+        """
+        typeid = class_type.__name__
         if typeid in cls._registry:
             raise ValueError(f"typeid {typeid} is already registerd.")
-        super().register(typeid, *args, **kwargs)
+        super().register(typeid, class_type, *args, **kwargs)
+        return typeid
+
+
+class RemoteException(Exception):
+    """Exception raised when remote process fails."""
+
+
+def _method(self, method_name, *args, **kwargs):
+    try:
+        # print(f"remote calls: '{method_name}'", flush=True)
+        return getattr(self._problem, method_name)(*args, **kwargs)  # pylint: disable=protected-access
+    except Exception as error:
+        raise RemoteException(f"RemoteException raised from:\n{error}") from error
 
 
 def redirect_icoco_to_server(cls):
     """Redirect ICoCo methods to server.
     """
     def create_icoco_method(method_name):
-        return lambda self, *args, **kwargs: getattr(self._problem, method_name)(*args, **kwargs)  # pylint: disable=protected-access
+        return lambda self, *args, **kwargs: _method(self, method_name, *args, **kwargs)
     for name in ICoCoMethods.ALL:
         setattr(cls, name, create_icoco_method(name))
     if not hasattr(cls, "__abstractmethods__"):
@@ -76,5 +108,5 @@ class ProblemClient(Problem):
             self._manager = ServerManager()
             self._manager.start()  # pylint: disable=consider-using-with
             self._server = getattr(self._manager, self._server)(*self._args, **self._kwargs)
-            print("type(self._server)", type(self._server))
+            # print("type(self._server)", type(self._server))
         return self._server

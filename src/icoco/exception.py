@@ -31,11 +31,15 @@ class WrongContext(Exception):
         precondition : str
             detail of the condition that wasn't met
         """
-        super().__init__(f"WrongContext in Problem instance with name: '{prob}'""\n"
+        super().__init__(prob, method, precondition)
+        self._message = (f"WrongContext in Problem instance with name: '{prob}'"
                          f" in method '{method}' : {precondition}")
 
+    def __str__(self) -> str:
+        return self._message
 
-class WrongArgument(ValueError):
+
+class WrongArgument(Exception):
     """Exception raised when an ICoCo method is called with an invalid argument.
 
     This exception is raised whenver an ICoCo method is called with inappropriate arguments.
@@ -57,8 +61,12 @@ class WrongArgument(ValueError):
         condition : str
             condition detail of the condition that wasn't met
         """
-        super().__init__(f"WrongArgument in Problem instance with name: '{prob}'""\n"
+        super().__init__(prob, method, arg, condition)
+        self._message = (f"WrongArgument in Problem instance with name: '{prob}'"
                          f" in method '{method}', argument '{arg}' : {condition}")
+
+    def __str__(self) -> str:
+        return self._message
 
 
 class NotImplementedMethod(NotImplementedError):
@@ -79,5 +87,9 @@ class NotImplementedMethod(NotImplementedError):
         method : str
             name of the method where the exception occurred
         """
-        super().__init__(f"NotImplemented in Problem instance with name: '{prob}'""\n"
+        super().__init__(prob, method)
+        self._message = (f"NotImplemented in Problem instance with name: '{prob}'"
                          f" in method '{method}'")
+
+    def __str__(self) -> str:
+        return self._message
