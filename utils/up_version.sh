@@ -48,7 +48,7 @@ if [ ! -d "${current_script_dir}/.venv_utils" ]; then
     python3 -m venv ${current_script_dir}/.venv_utils
 fi
 . ${current_script_dir}/.venv_utils/bin/activate
-pip install --upgrade pip setuptools
+pip install --upgrade pip setuptools tox
 
 # Tag the version
 echo ${version_name} > ${version_file}
