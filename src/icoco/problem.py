@@ -449,7 +449,7 @@ class Problem(ABC):
             a user- (or code-) defined value identifying the state.
         method : str
             a string specifying which method is used to save the state of the code. A code can
-                provide different methods (for example in memory, on disk, etc.).
+            provide different methods (for example in memory, on disk, etc.).
 
         Raises
         ------
@@ -479,7 +479,7 @@ class Problem(ABC):
             a user- (or code-) defined value identifying the state.
         method : str
             a string specifying which method is used to save the state of the code. A code can
-                provide different methods (for example in memory, on disk, etc.).
+            provide different methods (for example in memory, on disk, etc.).
 
         Raises
         ------
@@ -508,7 +508,7 @@ class Problem(ABC):
             a user- (or code-) defined value identifying the state.
         method : str
             a string specifying which method is used to save the state of the code. A code can
-                provide different methods (for example in memory, on disk, etc.).
+            provide different methods (for example in memory, on disk, etc.).
 
         Raises
         ------

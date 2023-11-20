@@ -113,7 +113,7 @@ class ProblemWrapper(Problem):
                 a user- (or code-) defined value identifying the state.
             method : str
                 a string specifying which method is used to save the state of the code. A code can
-                    provide different methods (for example in memory, on disk, etc.).
+                provide different methods (for example in memory, on disk, etc.).
             """
             self._states[(label, method)] = (self.time, self.stationnary)
 
@@ -126,7 +126,7 @@ class ProblemWrapper(Problem):
                 a user- (or code-) defined value identifying the state.
             method : str
                 a string specifying which method is used to save the state of the code. A code can
-                    provide different methods (for example in memory, on disk, etc.).
+                provide different methods (for example in memory, on disk, etc.).
 
             Returns
             -------
@@ -144,7 +144,7 @@ class ProblemWrapper(Problem):
                 a user- (or code-) defined value identifying the state.
             method : str
                 a string specifying which method is used to save the state of the code. A code can
-                    provide different methods (for example in memory, on disk, etc.).
+                provide different methods (for example in memory, on disk, etc.).
             """
             if self.is_state(label=label, method=method):
                 self._time = self._states[(label, method)][0]
@@ -159,7 +159,7 @@ class ProblemWrapper(Problem):
                 a user- (or code-) defined value identifying the state.
             method : str
                 a string specifying which method is used to save the state of the code. A code can
-                    provide different methods (for example in memory, on disk, etc.).
+                provide different methods (for example in memory, on disk, etc.).
             """
             if self.is_state(label=label, method=method):
                 self._states.pop((label, method))
@@ -779,7 +779,7 @@ class ProblemWrapper(Problem):
             a user- (or code-) defined value identifying the state.
         method : str
             a string specifying which method is used to save the state of the code. A code can
-                provide different methods (for example in memory, on disk, etc.).
+            provide different methods (for example in memory, on disk, etc.).
 
         Raises
         ------
@@ -822,7 +822,7 @@ class ProblemWrapper(Problem):
             a user- (or code-) defined value identifying the state.
         method : str
             a string specifying which method is used to save the state of the code. A code can
-                provide different methods (for example in memory, on disk, etc.).
+            provide different methods (for example in memory, on disk, etc.).
 
         Raises
         ------
@@ -869,7 +869,7 @@ class ProblemWrapper(Problem):
             a user- (or code-) defined value identifying the state.
         method : str
             a string specifying which method is used to save the state of the code. A code can
-                provide different methods (for example in memory, on disk, etc.).
+            provide different methods (for example in memory, on disk, etc.).
 
         Raises
         ------
