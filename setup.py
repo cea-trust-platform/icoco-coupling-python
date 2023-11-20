@@ -155,7 +155,7 @@ setup(
                  "myst-parser==0.16.1",
                  "numpydoc==1.1.0", ],
         "test": ["psutil==5.9.4",
-                 "pylint>=2.13.9",
+                 "pylint==2.13.9",
                  "pytest>=7.0.1",
                  "pytest-cov>=4.0.0",
                  "pytest-html>=3.2.0",
