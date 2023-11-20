@@ -34,7 +34,7 @@ class Problem(ABC):
 
     are not always needed since a code might not have any integer field to work with for example.
     Consequently, default implementation for all methods of this interface is to raise an
-    icoco.NotImplemented exception.
+    `icoco.exception.NotImplementedMethod` exception.
 
     Some of the methods may not be called when some conditions are not met (i.e. when not in the
     correct context). Thus in this documentation we define the "TIME_STEP_DEFINED context" as the
@@ -113,9 +113,9 @@ class Problem(ABC):
 
         Raises
         ------
-        icoco.WrongContext
+        WrongContext
             exception if called multiple times or after initialize().
-        icoco.WrongArgument
+        WrongArgument
             exception if an invalid path is provided.
         """
         raise NotImplementedMethod(prob=self.problem_name, method="setDataFile")
@@ -134,9 +134,9 @@ class Problem(ABC):
 
         Raises
         ------
-        icoco.WrongContext
+        WrongContext
             exception if called multiple times or after initialize().
-        icoco.WrongArgument
+        WrongArgument
             exception if an invalid path is provided.
         """
         raise NotImplementedMethod(prob=self.problem_name, method="setMPIComm")

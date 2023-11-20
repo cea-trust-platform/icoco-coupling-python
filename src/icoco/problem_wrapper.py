@@ -211,7 +211,7 @@ class ProblemWrapper(Problem):
 
         Raises
         ------
-        icoco.WrongArgument
+        WrongArgument
             exception if an working directory path is provided.
         """
 
@@ -250,9 +250,9 @@ class ProblemWrapper(Problem):
 
         Raises
         ------
-        icoco.WrongContext
+        WrongContext
             exception if called multiple times or after initialize().
-        icoco.WrongArgument
+        WrongArgument
             exception if an invalid path is provided.
         """
         datafile_path = pathlib.Path(datafile).resolve()
@@ -288,9 +288,9 @@ class ProblemWrapper(Problem):
 
         Raises
         ------
-        icoco.WrongContext
+        WrongContext
             exception if called multiple times or after initialize().
-        icoco.WrongArgument
+        WrongArgument
             exception if an invalid path is provided.
         """
         with in_working_dir(self._working_directory):
