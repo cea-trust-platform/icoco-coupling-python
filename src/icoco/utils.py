@@ -30,7 +30,8 @@ ICOCO_VERSION = "2.0"
 ICOCO_MAJOR_VERSION = 2
 ICOCO_MINOR_VERSION = 0
 
-class ICoCoMethods: # pylint: disable=too-few-public-methods
+
+class ICoCoMethods:  # pylint: disable=too-few-public-methods
     """Namespace to list all ICoCo methods."""
 
     PROBLEM = ["setDataFile", "setMPIComm", "initialize", "terminate"]
@@ -38,7 +39,7 @@ class ICoCoMethods: # pylint: disable=too-few-public-methods
 
     TIME_STEP = ["presentTime", "computeTimeStep", "initTimeStep", "solveTimeStep",
                  "validateTimeStep", "setStationaryMode", "getStationaryMode", "isStationary",
-                 "abortTimeStep", "resetTime", "iterateTimeStep",]
+                 "abortTimeStep", "resetTime", "iterateTimeStep"]
     """ICoco methods of section TimeStepManagement"""
 
     RESTORE = ["save", "restore", "forget"]

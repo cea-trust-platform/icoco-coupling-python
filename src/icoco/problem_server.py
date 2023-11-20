@@ -50,7 +50,8 @@ class RemoteException(Exception):
 def _method(self, method_name, *args, **kwargs):
     try:
         # print(f"remote calls: '{method_name}'", flush=True)
-        return getattr(self._problem, method_name)(*args, **kwargs)  # pylint: disable=protected-access
+        # pylint: disable=protected-access
+        return getattr(self._problem, method_name)(*args, **kwargs)
     except Exception as error:
         raise RemoteException(f"RemoteException raised from:\n{error}") from error
 

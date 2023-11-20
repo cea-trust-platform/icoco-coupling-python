@@ -267,12 +267,12 @@ class ProblemWrapper(Problem):
                                     )
             if self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="setDataFile",
-                                precondition="called after initialize()")
+                                   method="setDataFile",
+                                   precondition="called after initialize()")
             if self._datafile_path is not None:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="setDataFile",
-                                precondition="called multiple times")
+                                   method="setDataFile",
+                                   precondition="called multiple times")
             self._datafile_path = datafile_path
             self._impl.setDataFile(str(datafile_path))  # to take into account of change dir
 
@@ -298,12 +298,12 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="setMPIComm",
-                                precondition="called after initialize()")
+                                   method="setMPIComm",
+                                   precondition="called after initialize()")
             if self._mpicomm is not None:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="setMPIComm",
-                                precondition="called multiple times")
+                                   method="setMPIComm",
+                                   precondition="called multiple times")
             self._mpicomm = mpicomm
             self._impl.setMPIComm(mpicomm)
 
@@ -330,8 +330,8 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="initialize",
-                                precondition="called multiple times or after initialize()")
+                                   method="initialize",
+                                   precondition="called multiple times or after initialize()")
 
             self._context = ProblemWrapper.Context()
 
@@ -354,13 +354,13 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="terminate",
-                                precondition="called before initialize() or after terminate()")
+                                   method="terminate",
+                                   precondition="called before initialize() or after terminate()")
 
             if self._context.time_step_defined:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="terminate",
-                                precondition="called inside the TIME_STEP_DEFINED context"
+                                   method="terminate",
+                                   precondition="called inside the TIME_STEP_DEFINED context"
                                                 " (see Problem documentation)")
 
             self._impl.terminate()
@@ -393,8 +393,8 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="presentTime",
-                                precondition="called before initialize() or after terminate()")
+                                   method="presentTime",
+                                   precondition="called before initialize() or after terminate()")
             return self._context.time
 
     def computeTimeStep(self) -> Tuple[float, bool]:
@@ -427,13 +427,13 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="terminate",
-                                precondition="called before initialize() or after terminate()")
+                                   method="terminate",
+                                   precondition="called before initialize() or after terminate()")
 
             if self._context.time_step_defined:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="terminate",
-                                precondition="called inside the TIME_STEP_DEFINED context."
+                                   method="terminate",
+                                   precondition="called inside the TIME_STEP_DEFINED context."
                                                 " (see Problem documentation)")
 
             return self._impl.computeTimeStep()
@@ -469,13 +469,13 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="initTimeStep",
-                                precondition="called before initialize() or after terminate()")
+                                   method="initTimeStep",
+                                   precondition="called before initialize() or after terminate()")
 
             if self._context.time_step_defined:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="initTimeStep",
-                                precondition="called inside the TIME_STEP_DEFINED context."
+                                   method="initTimeStep",
+                                   precondition="called inside the TIME_STEP_DEFINED context."
                                                 " (see Problem documentation)")
 
             if dt < 0.0:
@@ -510,13 +510,13 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="solveTimeStep",
-                                precondition="called before initialize() or after terminate()")
+                                   method="solveTimeStep",
+                                   precondition="called before initialize() or after terminate()")
 
             if not self._context.time_step_defined:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="solveTimeStep",
-                                precondition="called outside the TIME_STEP_DEFINED context."
+                                   method="solveTimeStep",
+                                   precondition="called outside the TIME_STEP_DEFINED context."
                                                 " (see Problem documentation)")
 
             return self._impl.solveTimeStep()
@@ -541,13 +541,13 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="validateTimeStep",
-                                precondition="called before initialize() or after terminate()")
+                                   method="validateTimeStep",
+                                   precondition="called before initialize() or after terminate()")
 
             if not self._context.time_step_defined:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="validateTimeStep",
-                                precondition="called outside the TIME_STEP_DEFINED context."
+                                   method="validateTimeStep",
+                                   precondition="called outside the TIME_STEP_DEFINED context."
                                                 " (see Problem documentation)")
 
             self._impl.validateTimeStep()
@@ -582,13 +582,13 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="setStationaryMode",
-                                precondition="called before initialize() or after terminate()")
+                                   method="setStationaryMode",
+                                   precondition="called before initialize() or after terminate()")
 
             if self._context.time_step_defined:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="setStationaryMode",
-                                precondition="called inside the TIME_STEP_DEFINED context."
+                                   method="setStationaryMode",
+                                   precondition="called inside the TIME_STEP_DEFINED context."
                                                 " (see Problem documentation)")
 
             self._context.set_stationnary(stationnary=stationaryMode)
@@ -622,8 +622,8 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="getStationaryMode",
-                                precondition="called before initialize() or after terminate()")
+                                   method="getStationaryMode",
+                                   precondition="called before initialize() or after terminate()")
 
             return self._context.stationnary
 
@@ -649,13 +649,13 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="isStationary",
-                                precondition="called before initialize() or after terminate()")
+                                   method="isStationary",
+                                   precondition="called before initialize() or after terminate()")
 
             if self._context.time_step_defined:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="isStationary",
-                                precondition="called inside the TIME_STEP_DEFINED context."
+                                   method="isStationary",
+                                   precondition="called inside the TIME_STEP_DEFINED context."
                                                 " (see Problem documentation)")
 
             return self._impl.isStationary()
@@ -678,13 +678,13 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="abortTimeStep",
-                                precondition="called before initialize() or after terminate()")
+                                   method="abortTimeStep",
+                                   precondition="called before initialize() or after terminate()")
 
             if not self._context.time_step_defined:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="abortTimeStep",
-                                precondition="called outside the TIME_STEP_DEFINED context."
+                                   method="abortTimeStep",
+                                   precondition="called outside the TIME_STEP_DEFINED context."
                                                 " (see Problem documentation)")
 
             self._context.abort_step()
@@ -714,13 +714,13 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="resetTime",
-                                precondition="called before initialize() or after terminate()")
+                                   method="resetTime",
+                                   precondition="called before initialize() or after terminate()")
 
             if self._context.time_step_defined:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="resetTime",
-                                precondition="called inside the TIME_STEP_DEFINED context."
+                                   method="resetTime",
+                                   precondition="called inside the TIME_STEP_DEFINED context."
                                                 " (see Problem documentation)")
 
             self._context.reset_time(time=time)
@@ -752,13 +752,13 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="iterateTimeStep",
-                                precondition="called before initialize() or after terminate()")
+                                   method="iterateTimeStep",
+                                   precondition="called before initialize() or after terminate()")
 
             if not self._context.time_step_defined:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="iterateTimeStep",
-                                precondition="called outside the TIME_STEP_DEFINED context."
+                                   method="iterateTimeStep",
+                                   precondition="called outside the TIME_STEP_DEFINED context."
                                                 " (see Problem documentation)")
             return self._impl.iterateTimeStep()
 
@@ -796,13 +796,13 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="save",
-                                precondition="called before initialize() or after terminate()")
+                                   method="save",
+                                   precondition="called before initialize() or after terminate()")
 
             if self._context.time_step_defined:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="save",
-                                precondition="called inside the TIME_STEP_DEFINED context."
+                                   method="save",
+                                   precondition="called inside the TIME_STEP_DEFINED context."
                                                 " (see Problem documentation)")
 
             self._context.save(label=label, method=method)
@@ -839,13 +839,13 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="restore",
-                                precondition="called before initialize() or after terminate()")
+                                   method="restore",
+                                   precondition="called before initialize() or after terminate()")
 
             if self._context.time_step_defined:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="restore",
-                                precondition="called inside the TIME_STEP_DEFINED context."
+                                   method="restore",
+                                   precondition="called inside the TIME_STEP_DEFINED context."
                                                 " (see Problem documentation)")
 
             self._impl.restore(label=label, method=method)
@@ -883,8 +883,8 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="forget",
-                                precondition="called before initialize() or after terminate()")
+                                   method="forget",
+                                   precondition="called before initialize() or after terminate()")
 
             self._context.forget(label, method)
             self._impl.forget(label=label, method=method)
@@ -909,8 +909,8 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="getInputFieldsNames",
-                                precondition="called before initialize() or after terminate()")
+                                   method="getInputFieldsNames",
+                                   precondition="called before initialize() or after terminate()")
 
             return self._impl.getInputFieldsNames()
 
@@ -930,8 +930,8 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="getOutputFieldsNames",
-                                precondition="called before initialize() or after terminate()")
+                                   method="getOutputFieldsNames",
+                                   precondition="called before initialize() or after terminate()")
 
             return self._impl.getOutputFieldsNames()
 
@@ -960,8 +960,8 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="getFieldType",
-                                precondition="called before initialize() or after terminate()")
+                                   method="getFieldType",
+                                   precondition="called before initialize() or after terminate()")
 
             return self._impl.getFieldType(name=name)
 
@@ -981,8 +981,8 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="getMeshUnit",
-                                precondition="called before initialize() or after terminate()")
+                                   method="getMeshUnit",
+                                   precondition="called before initialize() or after terminate()")
 
             return self._impl.getMeshUnit()
 
@@ -1009,8 +1009,8 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="getFieldUnit",
-                                precondition="called before initialize() or after terminate()")
+                                   method="getFieldUnit",
+                                   precondition="called before initialize() or after terminate()")
 
             return self._impl.getFieldUnit(name)
 
@@ -1055,8 +1055,8 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="getInputMEDDoubleFieldTemplate",
-                                precondition="called before initialize() or after terminate()")
+                                   method="getInputMEDDoubleFieldTemplate",
+                                   precondition="called before initialize() or after terminate()")
 
             return self._impl.getInputMEDDoubleFieldTemplate(name)
 
@@ -1093,8 +1093,8 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="setInputMEDDoubleField",
-                                precondition="called before initialize() or after terminate()")
+                                   method="setInputMEDDoubleField",
+                                   precondition="called before initialize() or after terminate()")
 
             return self._impl.setInputMEDDoubleField(name=name, afield=afield)
 
@@ -1128,8 +1128,8 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="getOutputMEDDoubleField",
-                                precondition="called before initialize() or after terminate()")
+                                   method="getOutputMEDDoubleField",
+                                   precondition="called before initialize() or after terminate()")
             return self._impl.getOutputMEDDoubleField(name=name)
 
     def updateOutputMEDDoubleField(self,
@@ -1166,8 +1166,8 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="updateOutputMEDDoubleField",
-                                precondition="called before initialize() or after terminate()")
+                                   method="updateOutputMEDDoubleField",
+                                   precondition="called before initialize() or after terminate()")
             return self._impl.updateOutputMEDDoubleField(name=name, afield=afield)
 
     def getInputMEDIntFieldTemplate(self, name: str) -> medcoupling.MEDCouplingFieldInt:
@@ -1197,8 +1197,8 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="getInputMEDIntFieldTemplate",
-                                precondition="called before initialize() or after terminate()")
+                                   method="getInputMEDIntFieldTemplate",
+                                   precondition="called before initialize() or after terminate()")
 
             return self._impl.getInputMEDIntFieldTemplate(name)
 
@@ -1228,8 +1228,8 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="setInputMEDIntField",
-                                precondition="called before initialize() or after terminate()")
+                                   method="setInputMEDIntField",
+                                   precondition="called before initialize() or after terminate()")
 
             return self._impl.setInputMEDIntField(name=name, afield=afield)
 
@@ -1260,8 +1260,8 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="getOutputMEDIntField",
-                                precondition="called before initialize() or after terminate()")
+                                   method="getOutputMEDIntField",
+                                   precondition="called before initialize() or after terminate()")
 
             return self._impl.getOutputMEDIntField(name=name)
 
@@ -1292,8 +1292,8 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="updateOutputMEDIntField",
-                                precondition="called before initialize() or after terminate()")
+                                   method="updateOutputMEDIntField",
+                                   precondition="called before initialize() or after terminate()")
 
             return self._impl.updateOutputMEDIntField(name, afield)
 
@@ -1328,8 +1328,8 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="getInputMEDStringFieldTemplate",
-                                precondition="called before initialize() or after terminate()")
+                                   method="getInputMEDStringFieldTemplate",
+                                   precondition="called before initialize() or after terminate()")
 
             return self._impl.getInputMEDStringFieldTemplate(name)
 
@@ -1363,8 +1363,8 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="setInputMEDStringField",
-                                precondition="called before initialize() or after terminate()")
+                                   method="setInputMEDStringField",
+                                   precondition="called before initialize() or after terminate()")
 
             return self._impl.setInputMEDStringField(name=name, afield=afield)
 
@@ -1399,8 +1399,8 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="getOutputMEDStringField",
-                                precondition="called before initialize() or after terminate()")
+                                   method="getOutputMEDStringField",
+                                   precondition="called before initialize() or after terminate()")
 
             return self._impl.getOutputMEDStringField(name=name)
 
@@ -1435,8 +1435,8 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="updateOutputMEDStringField",
-                                precondition="called before initialize() or after terminate()")
+                                   method="updateOutputMEDStringField",
+                                   precondition="called before initialize() or after terminate()")
 
             return self._impl.updateOutputMEDStringField(name, afield)
 
@@ -1488,8 +1488,8 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="getInputValuesNames",
-                                precondition="called before initialize() or after terminate()")
+                                   method="getInputValuesNames",
+                                   precondition="called before initialize() or after terminate()")
 
             return self._impl.getInputValuesNames()
 
@@ -1509,8 +1509,8 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="getOutputValuesNames",
-                                precondition="called before initialize() or after terminate()")
+                                   method="getOutputValuesNames",
+                                   precondition="called before initialize() or after terminate()")
 
             return self._impl.getOutputValuesNames()
 
@@ -1539,8 +1539,8 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="getValueType",
-                                precondition="called before initialize() or after terminate()")
+                                   method="getValueType",
+                                   precondition="called before initialize() or after terminate()")
 
             return self._impl.getValueType(name=name)
 
@@ -1567,8 +1567,8 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="getFieldUnit",
-                                precondition="called before initialize() or after terminate()")
+                                   method="getFieldUnit",
+                                   precondition="called before initialize() or after terminate()")
 
             return self._impl.getValueUnit(name)
 
@@ -1594,8 +1594,8 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="setInputDoubleValue",
-                                precondition="called before initialize() or after terminate()")
+                                   method="setInputDoubleValue",
+                                   precondition="called before initialize() or after terminate()")
             self._impl.setInputDoubleValue(name=name, val=val)
 
     def getOutputDoubleValue(self, name: str) -> float:
@@ -1623,8 +1623,8 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="getOutputDoubleValue",
-                                precondition="called before initialize() or after terminate()")
+                                   method="getOutputDoubleValue",
+                                   precondition="called before initialize() or after terminate()")
             return self._impl.getOutputDoubleValue(name=name)
 
     def setInputIntValue(self, name: str, val: int) -> None:
@@ -1649,8 +1649,8 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="setInputIntValue",
-                                precondition="called before initialize() or after terminate()")
+                                   method="setInputIntValue",
+                                   precondition="called before initialize() or after terminate()")
             self._impl.setInputIntValue(name=name, val=val)
 
     def getOutputIntValue(self, name: str) -> int:
@@ -1678,8 +1678,8 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="getOutputIntValue",
-                                precondition="called before initialize() or after terminate()")
+                                   method="getOutputIntValue",
+                                   precondition="called before initialize() or after terminate()")
             return self._impl.getOutputIntValue(name=name)
 
     def setInputStringValue(self, name: str, val: str) -> None:
@@ -1704,8 +1704,8 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="setInputStringValue",
-                                precondition="called before initialize() or after terminate()")
+                                   method="setInputStringValue",
+                                   precondition="called before initialize() or after terminate()")
             self._impl.setInputStringValue(name=name, val=val)
 
     def getOutputStringValue(self, name: str) -> str:
@@ -1733,6 +1733,6 @@ class ProblemWrapper(Problem):
         with in_working_dir(self._working_directory):
             if not self._context:
                 raise WrongContext(prob=self._impl.problem_name,
-                                method="getOutputStringValue",
-                                precondition="called before initialize() or after terminate()")
+                                   method="getOutputStringValue",
+                                   precondition="called before initialize() or after terminate()")
             return self._impl.getOutputStringValue(name=name)
