@@ -205,8 +205,6 @@ class ProblemWrapper(Problem):
         ----------
         impl : Problem
             problem implmentation.
-        working_directory : pathlib.Path
-            problem implmentation.
         working_directory : pathlib.Path, optional
             Working directory to execute ICoCo methods, by default None
             If None, then working directory is runtime working directory
