@@ -4,6 +4,7 @@
 # You can import pytest and use its features.
 # import pytest
 
+from pathlib import Path
 import pytest
 
 import icoco
@@ -188,7 +189,12 @@ def test_minimal_api(save_restore_problem):
     # Test description:
     """Tests minimal implementation of ICoCo from the module."""
 
-    minimal = icoco.ProblemWrapper(save_restore_problem)
+    with pytest.raises(expected_exception=icoco.WrongArgument):
+        minimal = icoco.ProblemWrapper(
+            save_restore_problem, Path(__file__).resolve().parent / "not_existing_dir")
+
+
+    minimal = icoco.ProblemWrapper(save_restore_problem, Path(__file__).resolve().parent)
 
     assert minimal.GetICoCoMajorVersion() == 2
 
