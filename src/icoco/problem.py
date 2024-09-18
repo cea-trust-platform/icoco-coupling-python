@@ -99,6 +99,11 @@ class CheckScopeMeta(type):
         return newclass
 
 
+def check_scope(baseclass):
+    """ Add a verification of the calling context of ICoCo methods. """
+    return CheckScopeMeta(baseclass.__name__, baseclass.__bases__, baseclass.__dict__)
+
+
 class Problem(ABC, metaclass=CheckScopeMeta):
     """
     API that a code has to implement in order to comply with the ICoCo (version 2) norm.
