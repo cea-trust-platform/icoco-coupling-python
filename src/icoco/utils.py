@@ -31,6 +31,21 @@ ICOCO_MAJOR_VERSION = 2
 ICOCO_MINOR_VERSION = 0
 
 
+class ICoCoMethodContext:  # pylint: disable=too-few-public-methods
+
+    BEFORE_INITIALIZE = ["setDataFile","setMPIComm", "initialize"]
+    """Methods which must be called BEFORE ``initialize``."""
+
+    ONLY_INSIDE_TIME_STEP_DEFINED = ["solveTimeStep", "iterateTimeStep",
+                                 "validateTimeStep", "abortTimeStep"]
+    """Methods which must be called inside TIME_STEP_DEFINED context."""
+
+    ONLY_OUTSIDE_TIME_STEP_DEFINED = [
+        "terminate", "computeTimeStep", "initTimeStep", "setStationaryMode",
+        "getStationaryMode", "isStationary", "resetTime", "save", "restore"]
+    """Methods which must be called outside TIME_STEP_DEFINED context."""
+
+
 class ICoCoMethods:  # pylint: disable=too-few-public-methods
     """Namespace to list all ICoCo methods."""
 

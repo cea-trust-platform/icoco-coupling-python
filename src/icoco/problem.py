@@ -12,13 +12,94 @@ This module contains the API for ICoCo specifications
 """
 
 from abc import ABC, abstractmethod
+from types import FunctionType
 from typing import List, Tuple
 
-from icoco.utils import ICOCO_MAJOR_VERSION, ValueType, MPIComm, medcoupling  # type: ignore
-from icoco.exception import NotImplementedMethod
+from icoco.utils import (ICOCO_MAJOR_VERSION, ICoCoMethodContext, ICoCoMethods, ValueType,
+                         MPIComm, medcoupling)  # type: ignore
+from icoco.exception import NotImplementedMethod, WrongArgument, WrongContext
 
 
-class Problem(ABC):
+def _decorator_icoco_methods(method):
+    def check_initialized(self: Problem, *args, **kwargs):
+        if not self._initialized:
+            raise WrongContext(prob=self.problem_name,
+                                method=method.__name__,
+                                precondition="called after initialize() or before terminate().")
+        return method(self, *args, **kwargs)
+    def check_not_initialized(self: Problem, *args, **kwargs):
+        if self._initialized:
+            raise WrongContext(prob=self.problem_name,
+                               method=method.__name__,
+                               precondition="called before initialize() or after terminate().")
+        return method(self, *args, **kwargs)
+    if method.__name__ in ICoCoMethodContext.BEFORE_INITIALIZE:
+        newMethod = check_not_initialized
+    else:
+        newMethod = check_initialized
+
+    newMethod.__name__ = method.__name__
+    newMethod.__doc__ = method.__doc__
+    newMethod.__dict__.update(method.__dict__)
+    return newMethod
+
+def _decorator_time_step_context(method):
+    def check_inside_time_step(self: Problem, *args, **kwargs):
+        if not self._time_step_defined:
+            raise WrongContext(prob=self.problem_name,
+                               method=method.__name__,
+                               precondition="called outside the TIME_STEP_DEFINED context."
+                                            " (see Problem documentation)")
+        return method(self, *args, **kwargs)
+    def check_outside_time_step(self: Problem, *args, **kwargs):
+        if self._time_step_defined:
+            raise WrongContext(prob=self.problem_name,
+                               method=method.__name__,
+                               precondition="called inside the TIME_STEP_DEFINED context."
+                                            " (see Problem documentation)")
+        return method(self, *args, **kwargs)
+    if method.__name__ in ICoCoMethodContext.ONLY_INSIDE_TIME_STEP_DEFINED:
+        newMethod = check_inside_time_step
+    elif method.__name__ in ICoCoMethodContext.ONLY_OUTSIDE_TIME_STEP_DEFINED:
+        newMethod = check_outside_time_step
+    else:
+        return method
+    newMethod.__name__ = method.__name__
+    newMethod.__doc__ = method.__doc__
+    newMethod.__dict__.update(method.__dict__)
+    return newMethod
+
+
+class CheckScopeMeta(type):
+    """! Metaclass related to the use of checkScope. """
+
+    def __init__(cls, clsname, superclasses, attributedict):
+        type.__init__(cls, clsname, superclasses, attributedict)
+
+    def __new__(cls, clsname, superclasses, attributedict):
+
+        icocoMethods = ICoCoMethods.ALL
+
+        icocoMethodsTimeStepContextToCheck = (ICoCoMethodContext.ONLY_INSIDE_TIME_STEP_DEFINED +
+                                              ICoCoMethodContext.ONLY_OUTSIDE_TIME_STEP_DEFINED)
+
+        newDct = {}
+        for nameattr, method in attributedict.items():
+            if isinstance(method, FunctionType) and method.__name__ in icocoMethods:
+                if method.__name__ in icocoMethodsTimeStepContextToCheck:
+                    newDct[nameattr] = _decorator_time_step_context(method)
+                else:
+                    newDct[nameattr] = method
+                newDct[nameattr] = _decorator_icoco_methods(newDct[nameattr])
+            else:
+                newDct[nameattr] = method
+        newclass = type.__new__(cls, clsname, superclasses, newDct)
+        if '__doc__' in attributedict:
+            newclass.__doc__ = attributedict['__doc__']
+        return newclass
+
+
+class Problem(ABC, metaclass=CheckScopeMeta):
     """
     API that a code has to implement in order to comply with the ICoCo (version 2) norm.
 
@@ -90,6 +171,11 @@ class Problem(ABC):
 
         self._problem_name: str = self.__class__.__name__ if prob is None else prob
         """Name of the problem"""
+
+        self._initialized = False
+        """Initialized status."""
+        self._time_step_defined = False
+        """Time step status."""
 
     @property
     def problem_name(self) -> str:
