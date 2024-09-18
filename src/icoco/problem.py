@@ -34,14 +34,14 @@ def _decorator_icoco_methods(method):
                                precondition="called before initialize() or after terminate().")
         return method(self, *args, **kwargs)
     if method.__name__ in ICoCoMethodContext.BEFORE_INITIALIZE:
-        newMethod = check_not_initialized
+        new_method = check_not_initialized
     else:
-        newMethod = check_initialized
+        new_method = check_initialized
 
-    newMethod.__name__ = method.__name__
-    newMethod.__doc__ = method.__doc__
-    newMethod.__dict__.update(method.__dict__)
-    return newMethod
+    new_method.__name__ = method.__name__
+    new_method.__doc__ = method.__doc__
+    new_method.__dict__.update(method.__dict__)
+    return new_method
 
 def _decorator_time_step_context(method):
     def check_inside_time_step(self: Problem, *args, **kwargs):
@@ -59,15 +59,15 @@ def _decorator_time_step_context(method):
                                             " (see Problem documentation)")
         return method(self, *args, **kwargs)
     if method.__name__ in ICoCoMethodContext.ONLY_INSIDE_TIME_STEP_DEFINED:
-        newMethod = check_inside_time_step
+        new_method = check_inside_time_step
     elif method.__name__ in ICoCoMethodContext.ONLY_OUTSIDE_TIME_STEP_DEFINED:
-        newMethod = check_outside_time_step
+        new_method = check_outside_time_step
     else:
         return method
-    newMethod.__name__ = method.__name__
-    newMethod.__doc__ = method.__doc__
-    newMethod.__dict__.update(method.__dict__)
-    return newMethod
+    new_method.__name__ = method.__name__
+    new_method.__doc__ = method.__doc__
+    new_method.__dict__.update(method.__dict__)
+    return new_method
 
 
 class CheckScopeMeta(type):
@@ -78,22 +78,18 @@ class CheckScopeMeta(type):
 
     def __new__(cls, clsname, superclasses, attributedict):
 
-        icocoMethods = ICoCoMethods.ALL
-
-        icocoMethodsTimeStepContextToCheck = (ICoCoMethodContext.ONLY_INSIDE_TIME_STEP_DEFINED +
-                                              ICoCoMethodContext.ONLY_OUTSIDE_TIME_STEP_DEFINED)
-
-        newDct = {}
-        for nameattr, method in attributedict.items():
-            if isinstance(method, FunctionType) and method.__name__ in icocoMethods:
-                if method.__name__ in icocoMethodsTimeStepContextToCheck:
-                    newDct[nameattr] = _decorator_time_step_context(method)
+        new_dict = {}
+        for attr_name, method in attributedict.items():
+            if isinstance(method, FunctionType) and method.__name__ in ICoCoMethods.ALL:
+                if method.__name__ in (ICoCoMethodContext.ONLY_INSIDE_TIME_STEP_DEFINED +
+                                       ICoCoMethodContext.ONLY_OUTSIDE_TIME_STEP_DEFINED):
+                    new_dict[attr_name] = _decorator_time_step_context(method)
                 else:
-                    newDct[nameattr] = method
-                newDct[nameattr] = _decorator_icoco_methods(newDct[nameattr])
+                    new_dict[attr_name] = method
+                new_dict[attr_name] = _decorator_icoco_methods(new_dict[attr_name])
             else:
-                newDct[nameattr] = method
-        newclass = type.__new__(cls, clsname, superclasses, newDct)
+                new_dict[attr_name] = method
+        newclass = type.__new__(cls, clsname, superclasses, new_dict)
         if '__doc__' in attributedict:
             newclass.__doc__ = attributedict['__doc__']
         return newclass
