@@ -685,8 +685,9 @@ class ProblemWrapper(Problem):
                                    precondition="called outside the TIME_STEP_DEFINED context."
                                                 " (see Problem documentation)")
 
-            self._context.abort_step()
             self._impl.abortTimeStep()
+
+            self._context.abort_step()
 
     def resetTime(self, time: float) -> None:
         """(Optional) Reset the current time of the Problem to a given value.

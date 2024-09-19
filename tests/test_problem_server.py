@@ -105,4 +105,4 @@ def test_client():
 
     client.terminate()
 
-    client.__del__()
+    del client

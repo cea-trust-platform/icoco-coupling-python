@@ -17,24 +17,31 @@ from typing import List, Tuple
 
 from icoco.utils import (ICOCO_MAJOR_VERSION, ICoCoMethodContext, ICoCoMethods, ValueType,
                          MPIComm, medcoupling)  # type: ignore
-from icoco.exception import NotImplementedMethod, WrongArgument, WrongContext
+from icoco.exception import NotImplementedMethod, WrongContext
 
 
 def _decorator_icoco_methods(method):
-    def check_initialized(self: Problem, *args, **kwargs):
+    # pylint: disable=protected-access
+    def check_initialized(self: 'Problem', *args, **kwargs):
         if not self._initialized:
             raise WrongContext(prob=self.problem_name,
                                 method=method.__name__,
                                 precondition="called after initialize() or before terminate().")
         return method(self, *args, **kwargs)
-    def check_not_initialized(self: Problem, *args, **kwargs):
+    def check_not_initialized(self: 'Problem', *args, **kwargs):
         if self._initialized:
             raise WrongContext(prob=self.problem_name,
                                method=method.__name__,
                                precondition="called before initialize() or after terminate().")
-        return method(self, *args, **kwargs)
+        to_return = method(self, *args, **kwargs)
+        if method.__name__ == 'initialize':
+            self._initialized = True
+        return to_return
     if method.__name__ in ICoCoMethodContext.BEFORE_INITIALIZE:
         new_method = check_not_initialized
+    elif method.__name__ in ['getMEDCouplingMajorVersion', 'isMEDCoupling64Bits',
+                             'GetICoCoMajorVersion']:
+        return method
     else:
         new_method = check_initialized
 
@@ -44,20 +51,28 @@ def _decorator_icoco_methods(method):
     return new_method
 
 def _decorator_time_step_context(method):
-    def check_inside_time_step(self: Problem, *args, **kwargs):
+    # pylint: disable=protected-access
+    def check_inside_time_step(self: 'Problem', *args, **kwargs):
         if not self._time_step_defined:
             raise WrongContext(prob=self.problem_name,
                                method=method.__name__,
                                precondition="called outside the TIME_STEP_DEFINED context."
                                             " (see Problem documentation)")
-        return method(self, *args, **kwargs)
-    def check_outside_time_step(self: Problem, *args, **kwargs):
+        to_return = method(self, *args, **kwargs)
+        if method.__name__ in ['abortTimeStep', 'validateTimeStep']:
+            print(f"exits time step with {method.__name__}")
+            self._time_step_defined = False
+        return to_return
+    def check_outside_time_step(self: 'Problem', *args, **kwargs):
         if self._time_step_defined:
             raise WrongContext(prob=self.problem_name,
                                method=method.__name__,
                                precondition="called inside the TIME_STEP_DEFINED context."
                                             " (see Problem documentation)")
-        return method(self, *args, **kwargs)
+        to_return = method(self, *args, **kwargs)
+        if method.__name__ == 'initTimeStep':
+            self._time_step_defined = True
+        return to_return
     if method.__name__ in ICoCoMethodContext.ONLY_INSIDE_TIME_STEP_DEFINED:
         new_method = check_inside_time_step
     elif method.__name__ in ICoCoMethodContext.ONLY_OUTSIDE_TIME_STEP_DEFINED:
@@ -69,7 +84,25 @@ def _decorator_time_step_context(method):
     new_method.__dict__.update(method.__dict__)
     return new_method
 
+def _decorator_check_attributes(method):
+    # pylint: disable=protected-access
+    def check_attributes(self: 'Problem', *args, **kwargs):
+        to_return = method(self, *args, **kwargs)
 
+        if not hasattr(self, 'problem_name'):
+            setattr(self, 'problem_name', self.__class__.__name__)
+        if not hasattr(self, '_initialized'):
+            setattr(self, '_initialized', False)
+        if not hasattr(self, '_time_step_defined'):
+            setattr(self, '_time_step_defined', False)
+
+        return to_return
+
+    new_method = check_attributes
+    new_method.__name__ = method.__name__
+    new_method.__doc__ = method.__doc__
+    new_method.__dict__.update(method.__dict__)
+    return new_method
 class CheckScopeMeta(type):
     """! Metaclass related to the use of checkScope. """
 
@@ -80,12 +113,10 @@ class CheckScopeMeta(type):
 
         new_dict = {}
         for attr_name, method in attributedict.items():
-            if isinstance(method, FunctionType) and method.__name__ in ICoCoMethods.ALL:
-                if method.__name__ in (ICoCoMethodContext.ONLY_INSIDE_TIME_STEP_DEFINED +
-                                       ICoCoMethodContext.ONLY_OUTSIDE_TIME_STEP_DEFINED):
-                    new_dict[attr_name] = _decorator_time_step_context(method)
-                else:
-                    new_dict[attr_name] = method
+            if isinstance(method, FunctionType) and method.__name__ == '__init__':
+                new_dict[attr_name] = _decorator_check_attributes(method)
+            elif isinstance(method, FunctionType) and method.__name__ in ICoCoMethods.ALL:
+                new_dict[attr_name] = _decorator_time_step_context(method)
                 new_dict[attr_name] = _decorator_icoco_methods(new_dict[attr_name])
             else:
                 new_dict[attr_name] = method
@@ -100,7 +131,11 @@ def check_scope(baseclass):
     return CheckScopeMeta(baseclass.__name__, baseclass.__bases__, baseclass.__dict__)
 
 
-class Problem(ABC, metaclass=CheckScopeMeta):
+class MetaProblem(type(ABC), CheckScopeMeta):
+    """Meta class for Problem."""
+
+
+class Problem(ABC, metaclass=MetaProblem):
     """
     API that a code has to implement in order to comply with the ICoCo (version 2) norm.
 

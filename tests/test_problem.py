@@ -1,10 +1,12 @@
 """This test implement the minimal API."""
-# Test files are expected to start with 'test_' prefix
+# pylint: disable=protected-access
+# # Test files are expected to start with 'test_' prefix
 
 # You can import pytest and use its features.
 # import pytest
 
 import pytest
+from test_problem_wrapper import _raises_before_initialize
 
 import icoco
 
@@ -15,24 +17,35 @@ def test_static_methods():
     assert icoco.Problem.GetICoCoMajorVersion() == 2
 
 
-def _test_raises_not_implemented(implem: icoco.Problem):  # pylint: disable=too-many-statements
+def _test_raises_not_implemented(implem: icoco.Problem, check_minimal_api = False):  # pylint: disable=too-many-statements
     """Tests that not implemented do raise icoco.NotImplementedMethod"""
-    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
-        implem.setDataFile("")
-    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
-        implem.setMPIComm(None)
-    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
-        implem.isStationary()
-    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
-        implem.abortTimeStep()
-    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
-        implem.resetTime(time=0.0)
-    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
-        implem.iterateTimeStep()
-    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
-        implem.save(label=0, method="")
-    with pytest.raises(expected_exception=icoco.NotImplementedMethod):
-        implem.restore(label=0, method="")
+
+    if check_minimal_api:
+        return
+
+    if not implem._initialized:
+        with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+            implem.setDataFile("")
+        with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+            implem.setMPIComm(None)
+        return
+
+    if implem._time_step_defined:
+        with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+            implem.iterateTimeStep()
+        with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+            implem.abortTimeStep()
+    else:
+        with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+            implem.isStationary()
+        with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+            implem.resetTime(0.0)
+        with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+            implem.save(label=0, method="")
+        with pytest.raises(expected_exception=icoco.NotImplementedMethod):
+            implem.restore(label=0, method="")
+
+
     with pytest.raises(expected_exception=icoco.NotImplementedMethod):
         implem.forget(label=0, method="")
     with pytest.raises(expected_exception=icoco.NotImplementedMethod):
@@ -96,15 +109,19 @@ def _test_raises_not_implemented(implem: icoco.Problem):  # pylint: disable=too-
 
 
 # Test functions are expected to start with 'test_' prefix
-def test_minimal_api(minimal_problem):
+def run_test_minimal_api(minimal_problem, check_minimal_api: bool):
     # Test description:
     """Tests minimal implementation of ICoCo from the module."""
 
     minimal = minimal_problem
 
+    _raises_before_initialize(minimal, check_minimal_api)
+
+    _test_raises_not_implemented(minimal, check_minimal_api)
+
     minimal.initialize()
 
-    assert minimal.problem_name == "MinimalProblem"
+    assert minimal.problem_name in ["MinimalProblem", "MinimalNotAProblem"]
 
     assert minimal.presentTime() == 0.0
 
@@ -112,12 +129,23 @@ def test_minimal_api(minimal_problem):
 
     minimal.initTimeStep(dt=dt)
 
+    _test_raises_not_implemented(minimal, check_minimal_api)
+
     minimal.solveTimeStep()
 
     minimal.validateTimeStep()
 
     assert minimal.presentTime() == dt
 
-    _test_raises_not_implemented(minimal)
+    _test_raises_not_implemented(minimal, check_minimal_api)
 
     minimal.terminate()
+
+
+def test_minimal_api(minimal_problem):
+    """Tests minimal implementation of ICoCo from the module unsing icoco.Problem."""
+    run_test_minimal_api(minimal_problem, check_minimal_api = False)
+
+def test_minimal_api_not_a_problem(minimal_not_a_problem):
+    """Tests minimal implementation of ICoCo from the module unsing check_scope."""
+    run_test_minimal_api(minimal_not_a_problem, check_minimal_api = True)

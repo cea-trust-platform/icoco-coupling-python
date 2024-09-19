@@ -1,4 +1,5 @@
 """This test implement the minimal API."""
+# pylint: disable=protected-access
 # Test files are expected to start with 'test_' prefix
 
 # You can import pytest and use its features.
@@ -96,7 +97,7 @@ def _raises_after_initialize(implem: icoco.ProblemWrapper):  # pylint: disable=t
         implem.setMPIComm(None)
 
 
-def _raises_before_initialize(implem: icoco.ProblemWrapper):  # pylint: disable=too-many-statements
+def _raises_before_initialize(implem: icoco.ProblemWrapper, check_minimal_api = False):  # pylint: disable=too-many-statements
     """Test raise WrongContext before initialize"""
     with pytest.raises(expected_exception=icoco.WrongContext):
         implem.computeTimeStep()
@@ -112,6 +113,12 @@ def _raises_before_initialize(implem: icoco.ProblemWrapper):  # pylint: disable=
         implem.getStationaryMode()
     with pytest.raises(expected_exception=icoco.WrongContext):
         implem.presentTime()
+    with pytest.raises(expected_exception=icoco.WrongContext):
+        implem.terminate()
+
+    if check_minimal_api:
+        return
+
     with pytest.raises(expected_exception=icoco.WrongContext):
         implem.isStationary()
     with pytest.raises(expected_exception=icoco.WrongContext):
@@ -180,8 +187,6 @@ def _raises_before_initialize(implem: icoco.ProblemWrapper):  # pylint: disable=
         implem.setInputStringValue(name="", val="")
     with pytest.raises(expected_exception=icoco.WrongContext):
         implem.getOutputStringValue(name="")
-    with pytest.raises(expected_exception=icoco.WrongContext):
-        implem.terminate()
 
 
 # Test functions are expected to start with 'test_' prefix
@@ -258,6 +263,7 @@ def test_minimal_api(save_restore_problem):
         minimal.iterateTimeStep()
     with pytest.raises(expected_exception=icoco.NotImplementedMethod):
         minimal.abortTimeStep()
+    minimal.validateTimeStep()
 
     _test_save_restore_forget(implem=minimal)
     _test_raises_not_implemented_without_context(implem=minimal)

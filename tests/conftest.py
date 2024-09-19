@@ -4,6 +4,7 @@ from typing import Dict, Tuple
 import pytest
 
 import icoco
+from icoco.problem import check_scope
 
 
 class MinimalProblem(icoco.Problem):
@@ -47,6 +48,54 @@ class MinimalProblem(icoco.Problem):
     def getStationaryMode(self) -> bool:
         return self._stat
 
+class MinimalNotAProblem:
+    """Minimal implementation of ICoCo without icoco.Problem"""
+
+    def __init__(self) -> None:
+        self._time: float = 0.0
+        self._dt: float = 0.0
+        self._stat: bool = False
+
+    def initialize(self) -> bool:
+        """Defines ICoCo API"""
+        self._time: float = 0.0
+        self._dt: float = 0.0
+        self._stat: bool = False
+        return True
+
+    def terminate(self) -> None:
+        """Defines ICoCo API"""
+
+    def presentTime(self) -> float:
+        """Defines ICoCo API"""
+        return self._time
+
+    def computeTimeStep(self) -> Tuple[float, bool]:
+        """Defines ICoCo API"""
+        return (0.1, False)
+
+    def initTimeStep(self, dt: float) -> bool:
+        """Defines ICoCo API"""
+        self._dt = dt
+        return True
+
+    def solveTimeStep(self) -> bool:
+        """Defines ICoCo API"""
+        print(f"Solver from t={self._time} to t+dt={self._time + self._dt}")
+        return True
+
+    def validateTimeStep(self) -> None:
+        """Defines ICoCo API"""
+        self._time += self._dt
+
+    def setStationaryMode(self, stationaryMode: bool) -> None:
+        """Defines ICoCo API"""
+        self._stat = stationaryMode
+
+    def getStationaryMode(self) -> bool:
+        """Defines ICoCo API"""
+        return self._stat
+
 
 class SaveRestoreProblem(MinimalProblem):
     """Minimal implementation of ICoCo + Save/Restore capabilities"""
@@ -80,6 +129,13 @@ def minimal_problem():
     """Generate the minimal implementation for the icoco.Problem"""
 
     return MinimalProblem()
+
+
+@pytest.fixture
+def minimal_not_a_problem():
+    """Generate the minimal implementation for the icoco.Problem"""
+
+    return check_scope(MinimalNotAProblem)()
 
 
 @pytest.fixture
