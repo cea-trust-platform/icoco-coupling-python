@@ -61,6 +61,7 @@ class RemoteProblem(icoco.Problem):
                 condition="Name not in ['pid']")
         return os.getpid()
 
+
 class RemoteProblem2(RemoteProblem):
     """Minimal implementation of ICoCo"""
 
@@ -105,4 +106,4 @@ def test_client():
 
     client.terminate()
 
-    del client
+    client.__del__()  # pylint: disable=unnecessary-dunder-call
