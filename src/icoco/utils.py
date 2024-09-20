@@ -34,14 +34,14 @@ ICOCO_MINOR_VERSION = 0
 class ICoCoMethodContext:  # pylint: disable=too-few-public-methods
     """Namespace to list all context restrictions for ICoCo methods."""
 
-    BEFORE_INITIALIZE = ["setDataFile","setMPIComm", "initialize"]
+    BEFORE_INITIALIZE = ["setDataFile", "setMPIComm", "initialize"]
     """Methods which must be called BEFORE ``initialize``."""
 
     ONLY_INSIDE_TIME_STEP_DEFINED = ["solveTimeStep", "iterateTimeStep",
-                                 "validateTimeStep", "abortTimeStep"]
+                                     "validateTimeStep", "abortTimeStep"]
     """Methods which must be called inside TIME_STEP_DEFINED context."""
 
-    ONLY_OUTSIDE_TIME_STEP_DEFINED = [ # "getStationaryMode", FIXME norme says it should be here
+    ONLY_OUTSIDE_TIME_STEP_DEFINED = [  # "getStationaryMode", FIXME norme says it should be here
         "terminate", "computeTimeStep", "initTimeStep", "setStationaryMode",
         "isStationary", "resetTime", "save", "restore"]
     """Methods which must be called outside TIME_STEP_DEFINED context."""

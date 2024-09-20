@@ -25,9 +25,10 @@ def _decorator_icoco_methods(method):
     def check_initialized(self: 'Problem', *args, **kwargs):
         if not self._initialized:
             raise WrongContext(prob=self.problem_name,
-                                method=method.__name__,
-                                precondition="called after initialize() or before terminate().")
+                               method=method.__name__,
+                               precondition="called after initialize() or before terminate().")
         return method(self, *args, **kwargs)
+
     def check_not_initialized(self: 'Problem', *args, **kwargs):
         if self._initialized:
             raise WrongContext(prob=self.problem_name,
@@ -50,6 +51,7 @@ def _decorator_icoco_methods(method):
     new_method.__dict__.update(method.__dict__)
     return new_method
 
+
 def _decorator_time_step_context(method):
     # pylint: disable=protected-access
     def check_inside_time_step(self: 'Problem', *args, **kwargs):
@@ -63,6 +65,7 @@ def _decorator_time_step_context(method):
             print(f"exits time step with {method.__name__}")
             self._time_step_defined = False
         return to_return
+
     def check_outside_time_step(self: 'Problem', *args, **kwargs):
         if self._time_step_defined:
             raise WrongContext(prob=self.problem_name,
@@ -84,6 +87,7 @@ def _decorator_time_step_context(method):
     new_method.__dict__.update(method.__dict__)
     return new_method
 
+
 def _decorator_check_attributes(method):
     # pylint: disable=protected-access
     def check_attributes(self: 'Problem', *args, **kwargs):
@@ -103,6 +107,8 @@ def _decorator_check_attributes(method):
     new_method.__doc__ = method.__doc__
     new_method.__dict__.update(method.__dict__)
     return new_method
+
+
 class CheckScopeMeta(type):
     """! Metaclass related to the use of checkScope. """
 
