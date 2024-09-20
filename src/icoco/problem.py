@@ -129,6 +129,11 @@ class CheckScopeMeta(type):
         newclass = type.__new__(cls, clsname, superclasses, new_dict)
         if '__doc__' in attributedict:
             newclass.__doc__ = attributedict['__doc__']
+        else:
+            for surperclass in superclasses:
+                if hasattr(surperclass.__dict__, '__doc__'):
+                    newclass.__doc__ = surperclass.__dict__['__doc__']
+                    return newclass
         return newclass
 
 

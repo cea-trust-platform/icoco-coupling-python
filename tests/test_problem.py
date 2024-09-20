@@ -115,13 +115,15 @@ def run_test_minimal_api(minimal_problem, check_minimal_api: bool):
 
     minimal = minimal_problem
 
+    assert "Minimal implementation" in minimal.__doc__
+
     _raises_before_initialize(minimal, check_minimal_api)
 
     _test_raises_not_implemented(minimal, check_minimal_api)
 
     minimal.initialize()
 
-    assert minimal.problem_name in ["MinimalProblem", "MinimalNotAProblem"]
+    assert minimal.problem_name in ["MinimalProblem", "MinimalProblemNoDoc", "MinimalNotAProblem"]
 
     assert minimal.presentTime() == 0.0
 
@@ -145,6 +147,13 @@ def run_test_minimal_api(minimal_problem, check_minimal_api: bool):
 def test_minimal_api(minimal_problem):
     """Tests minimal implementation of ICoCo from the module unsing icoco.Problem."""
     run_test_minimal_api(minimal_problem, check_minimal_api = False)
+
+
+def test_minimal_api_nodoc(minimal_problem_nodoc):
+    """Tests minimal implementation of ICoCo from the module unsing icoco.Problem
+    wo class docstring."""
+    run_test_minimal_api(minimal_problem_nodoc, check_minimal_api = False)
+
 
 def test_minimal_api_not_a_problem(minimal_not_a_problem):
     """Tests minimal implementation of ICoCo from the module unsing check_scope."""

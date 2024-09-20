@@ -97,6 +97,10 @@ class MinimalNotAProblem:
         return self._stat
 
 
+class MinimalProblemNoDoc(MinimalProblem):  # pylint: disable=missing-class-docstring
+    pass
+
+
 class SaveRestoreProblem(MinimalProblem):
     """Minimal implementation of ICoCo + Save/Restore capabilities"""
 
@@ -129,6 +133,13 @@ def minimal_problem():
     """Generate the minimal implementation for the icoco.Problem"""
 
     return MinimalProblem()
+
+
+@pytest.fixture
+def minimal_problem_nodoc():
+    """Generate the minimal implementation for the icoco.Problem wo class docstring"""
+
+    return MinimalProblemNoDoc()
 
 
 @pytest.fixture
