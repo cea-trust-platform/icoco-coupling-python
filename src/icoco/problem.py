@@ -34,7 +34,7 @@ def check_scope(baseclass):
             - '_initialized': initialization status, by default False.
             - '_time_step_defined': time step status, by default False.
             - '_working_directory': defines the working directory when calling ICoCo methods, by
-                default None.
+              default None.
     """
     return _CheckScopeMeta(baseclass.__name__, baseclass.__bases__, baseclass.__dict__)
 
