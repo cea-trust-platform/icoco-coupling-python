@@ -21,12 +21,51 @@ from icoco import Problem
 class MyICoCoProblem(Problem):
 
     def __init__(self):
-        pass
+        super().__init__()
 
     ...
 ```
 
 Once all {class}`abstractmethods` must be implmemented, you have a functional API.
+
+The {class}`icoco.problem.Problem` implement scope checks by default (initialization and inside/outside
+time step). These checks can be disabled at any time:
+
+```python
+
+from icoco import Problem
+
+class MyICoCoProblem(Problem):
+
+    def __init__(self):
+        super().__init__(ensure_scope=False)
+
+    ...
+
+    def other_icoco_method(self):
+        ensure_scope = self._ensure_scope
+        self._ensure_scope = False
+        ...
+        self._ensure_scope = self._ensure_scope
+
+    ...
+```
+
+A second usefull feature is implemented within the {class}`icoco.problem.Problem` class: the possibility
+to execute the ICoCo method from a specific working directory:
+
+```python
+
+from pathlib import Path
+from icoco import Problem
+
+class MyICoCoProblem(Problem):
+
+    def __init__(self):
+        super().__init__(working_directory=Path("/home/user/working_dir"))
+
+    ...
+```
 
 ### Use it in a *safe* way (**EXPERIMENTAL**)
 
