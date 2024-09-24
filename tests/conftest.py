@@ -1,5 +1,6 @@
 """conftest for pytest"""
 
+from pathlib import Path
 from typing import Dict, Tuple
 import pytest
 
@@ -10,8 +11,11 @@ from icoco.problem import check_scope
 class MinimalProblem(icoco.Problem):
     """Minimal implementation of ICoCo"""
 
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self,
+                 prob: str = None,
+                 ensure_scope: bool = True,
+                 working_directory: Path = None) -> None:
+        super().__init__(prob, ensure_scope, working_directory)
         self._time: float = 0.0
         self._dt: float = 0.0
         self._stat: bool = False
@@ -104,8 +108,11 @@ class MinimalProblemNoDoc(MinimalProblem):  # pylint: disable=missing-class-docs
 class SaveRestoreProblem(MinimalProblem):
     """Minimal implementation of ICoCo + Save/Restore capabilities"""
 
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self,
+                 prob: str = None,
+                 ensure_scope: bool = True,
+                 working_directory: Path = None) -> None:
+        super().__init__(prob, ensure_scope, working_directory)
         self._state: Dict[Tuple[int, str]] = {
             (0, "file"): (0.0, True),  # Emulate save in file at initial time
             (1, "file"): (100.0, False)  # Emulate save in file at final time
@@ -150,7 +157,11 @@ def minimal_not_a_problem():
 
 
 @pytest.fixture
-def save_restore_problem():
+def save_restore_problem_creator():
     """Generate the minimal implementation + save/restore for the icoco.Problem"""
 
-    return SaveRestoreProblem()
+    def creator(working_directory: Path):
+
+        return SaveRestoreProblem(working_directory=working_directory)
+
+    return creator

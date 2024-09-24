@@ -190,16 +190,14 @@ def _raises_before_initialize(implem: icoco.ProblemWrapper, check_minimal_api = 
 
 
 # Test functions are expected to start with 'test_' prefix
-def test_minimal_api(save_restore_problem):
+def test_minimal_api(save_restore_problem_creator):
     # Test description:
     """Tests minimal implementation of ICoCo from the module."""
 
     with pytest.raises(expected_exception=icoco.WrongArgument):
-        minimal = icoco.ProblemWrapper(
-            save_restore_problem, Path(__file__).resolve().parent / "not_existing_dir")
+        save_restore_problem_creator(Path(__file__).resolve().parent / "not_existing_dir")
 
-
-    minimal = icoco.ProblemWrapper(save_restore_problem, Path(__file__).resolve().parent)
+    minimal = icoco.ProblemWrapper(save_restore_problem_creator(Path(__file__).resolve().parent))
 
     assert minimal.GetICoCoMajorVersion() == 2
 

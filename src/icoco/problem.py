@@ -12,12 +12,14 @@ This module contains the API for ICoCo specifications
 """
 
 from abc import ABC, abstractmethod
+import os
+import pathlib
 from types import FunctionType
 from typing import List, Tuple
 
 from icoco.utils import (ICOCO_MAJOR_VERSION, ICoCoMethodContext, ICoCoMethods, ValueType,
                          MPIComm, medcoupling)  # type: ignore
-from icoco.exception import NotImplementedMethod, WrongContext
+from icoco.exception import NotImplementedMethod, WrongArgument, WrongContext
 
 
 def _decorator_icoco_methods(method):
@@ -104,6 +106,17 @@ def _decorator_check_attributes(method):
         if not hasattr(self, '_time_step_defined'):
             setattr(self, '_time_step_defined', False)
 
+        if not hasattr(self, '_working_directory'):
+            setattr(self, '_working_directory', None)
+
+        if (self._working_directory is not None and
+                not pathlib.Path(self._working_directory).exists()):
+            raise WrongArgument(prob=self.problem_name,
+                                method="__init__",
+                                arg="working_directory",
+                                condition="invalid path is provided",
+                                )
+
         return to_return
 
     new_method = check_attributes
@@ -111,6 +124,30 @@ def _decorator_check_attributes(method):
     new_method.__doc__ = method.__doc__
     new_method.__dict__.update(method.__dict__)
     return new_method
+
+
+def _decorator_working_dir(method):
+    # pylint: disable=protected-access
+    def in_working_dir(self: 'Problem', *args, **kwargs):
+
+        origin = pathlib.Path().absolute()
+        try:
+            if self._working_directory:
+                os.chdir(self._working_directory)
+            to_return = method(self, *args, **kwargs)
+        finally:
+            if self._working_directory:
+                os.chdir(origin)
+
+        return to_return
+
+    new_method = in_working_dir
+    new_method.__name__ = method.__name__
+    new_method.__doc__ = method.__doc__
+    new_method.__dict__.update(method.__dict__)
+    return new_method
+
+
 
 
 class CheckScopeMeta(type):
@@ -122,14 +159,15 @@ class CheckScopeMeta(type):
     def __new__(cls, clsname, superclasses, attributedict):
 
         new_dict = {}
-        for attr_name, method in attributedict.items():
-            if isinstance(method, FunctionType) and method.__name__ == '__init__':
-                new_dict[attr_name] = _decorator_check_attributes(method)
-            elif isinstance(method, FunctionType) and method.__name__ in ICoCoMethods.ALL:
-                new_dict[attr_name] = _decorator_time_step_context(method)
+        for attr_name, item in attributedict.items():
+            if isinstance(item, FunctionType) and item.__name__ == '__init__':
+                new_dict[attr_name] = _decorator_check_attributes(item)
+            elif isinstance(item, FunctionType) and item.__name__ in ICoCoMethods.ALL:
+                new_dict[attr_name] = _decorator_working_dir(item)
+                new_dict[attr_name] = _decorator_time_step_context(new_dict[attr_name])
                 new_dict[attr_name] = _decorator_icoco_methods(new_dict[attr_name])
             else:
-                new_dict[attr_name] = method
+                new_dict[attr_name] = item
         newclass = type.__new__(cls, clsname, superclasses, new_dict)
         if '__doc__' in attributedict:
             newclass.__doc__ = attributedict['__doc__']
@@ -153,6 +191,8 @@ def check_scope(baseclass):
             - '_ensure_scope': to enable/disable scope checking, by default True.
             - '_initialized': initialization status, by default False.
             - '_time_step_defined': time step status, by default False.
+            - '_working_directory': defines the working directory when calling ICoCo methods, by
+                default None.
     """
     return CheckScopeMeta(baseclass.__name__, baseclass.__bases__, baseclass.__dict__)
 
@@ -216,7 +256,11 @@ class Problem(ABC, metaclass=MetaProblem):
     # section Problem
     # ******************************************************
 
-    def __init__(self, prob: str = None, ensure_scope: bool = True) -> None:  # type: ignore
+    def __init__(self,
+                 prob: str = None,
+                 ensure_scope: bool = True,
+                 working_directory: pathlib.Path = None
+                 ) -> None:  # type: ignore
         """Constructor.
 
         Notes
@@ -230,6 +274,8 @@ class Problem(ABC, metaclass=MetaProblem):
             problem name, by default None.
         ensure_scope : bool, optional
             set True to ensure context when calling ICoCo methods, by default True.
+        working_directory : pathlib.Path, optional
+            defines the working directory when calling ICoCo methods, by default None.
         """
         super().__init__()
 
@@ -242,6 +288,8 @@ class Problem(ABC, metaclass=MetaProblem):
         """Initialized status."""
         self._time_step_defined = False
         """Time step status."""
+        self._working_directory: pathlib.Path = working_directory
+        """Working directory when ICoCo method is called"""
 
     @property
     def problem_name(self) -> str:
