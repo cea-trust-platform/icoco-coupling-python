@@ -143,6 +143,8 @@ def run_test_minimal_api(minimal_problem, check_minimal_api: bool):
 
     minimal.terminate()
 
+    _raises_before_initialize(minimal, check_minimal_api)
+
 
 def test_minimal_api(minimal_problem):
     """Tests minimal implementation of ICoCo from the module unsing icoco.Problem."""

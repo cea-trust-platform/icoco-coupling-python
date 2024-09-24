@@ -27,7 +27,10 @@ def _decorator_icoco_methods(method):
             raise WrongContext(prob=self.problem_name,
                                method=method.__name__,
                                precondition="called after initialize() or before terminate().")
-        return method(self, *args, **kwargs)
+        to_return = method(self, *args, **kwargs)
+        if method.__name__ == 'terminate':
+            self._initialized = False
+        return to_return
 
     def check_not_initialized(self: 'Problem', *args, **kwargs):
         if self._initialized:
