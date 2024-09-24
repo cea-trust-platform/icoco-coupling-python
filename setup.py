@@ -151,8 +151,9 @@ setup(
     # projects.
     extras_require={  # Optional
         "docs": ["psutil==5.9.4",
+                 "sphinx>=5.0.0",
                  "sphinx-rtd-theme==1.1.1",
-                 "myst-parser==0.16.1",
+                 "myst-parser",
                  "numpydoc==1.1.0", ],
         "test": ["psutil==5.9.4",
                  "pylint==3.2.7",
