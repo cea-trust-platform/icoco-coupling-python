@@ -99,7 +99,7 @@ project_name="icoco"
 venv_directory=${current_dir}/environment-${project_name}
 # add here additional python prerequisities
 prerequisities_packages=(
-    pylint==2.13.9
+    pylint==2.17.7
     pytest==7.0.1
     pytest-cov==4.0.0
     pytest-html==3.2.0

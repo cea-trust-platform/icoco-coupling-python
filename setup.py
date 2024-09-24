@@ -133,7 +133,7 @@ setup(
     # 'Programming Language' classifiers above, 'pip install' will check this
     # and refuse to install the project if the version does not match. See
     # https://packaging.python.org/guides/distributing-packages-using-setuptools/#python-requires
-    python_requires=">=3.8, <4",
+    python_requires=">=3.7, <4",
     # This field lists other packages that your project depends on to run.
     # Any package you put here will be installed by pip when your project is
     # installed, so they must be valid existing projects.
@@ -156,7 +156,7 @@ setup(
                  "myst-parser",
                  "numpydoc==1.1.0", ],
         "test": ["psutil==5.9.4",
-                 "pylint==3.2.7",
+                 "pylint>=2.17.7",
                  "pytest>=7.0.1",
                  "pytest-cov>=4.0.0",
                  "pytest-html>=3.2.0",
