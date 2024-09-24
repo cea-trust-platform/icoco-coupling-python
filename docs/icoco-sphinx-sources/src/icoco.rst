@@ -12,6 +12,7 @@ Submodules
    icoco.problem_server
    icoco.problem_wrapper
    icoco.utils
+   icoco.meta
 
 Module contents
 ---------------
