@@ -23,7 +23,7 @@ from icoco.exception import NotImplementedMethod, WrongContext
 def _decorator_icoco_methods(method):
     # pylint: disable=protected-access
     def check_initialized(self: 'Problem', *args, **kwargs):
-        if not self._initialized:
+        if self._ensure_scope and not self._initialized:
             raise WrongContext(prob=self.problem_name,
                                method=method.__name__,
                                precondition="called after initialize() or before terminate().")
@@ -33,7 +33,7 @@ def _decorator_icoco_methods(method):
         return to_return
 
     def check_not_initialized(self: 'Problem', *args, **kwargs):
-        if self._initialized:
+        if self._ensure_scope and self._initialized:
             raise WrongContext(prob=self.problem_name,
                                method=method.__name__,
                                precondition="called before initialize() or after terminate().")
@@ -58,19 +58,18 @@ def _decorator_icoco_methods(method):
 def _decorator_time_step_context(method):
     # pylint: disable=protected-access
     def check_inside_time_step(self: 'Problem', *args, **kwargs):
-        if not self._time_step_defined:
+        if self._ensure_scope and not self._time_step_defined:
             raise WrongContext(prob=self.problem_name,
                                method=method.__name__,
                                precondition="called outside the TIME_STEP_DEFINED context."
                                             " (see Problem documentation)")
         to_return = method(self, *args, **kwargs)
         if method.__name__ in ['abortTimeStep', 'validateTimeStep']:
-            print(f"exits time step with {method.__name__}")
             self._time_step_defined = False
         return to_return
 
     def check_outside_time_step(self: 'Problem', *args, **kwargs):
-        if self._time_step_defined:
+        if self._ensure_scope and self._time_step_defined:
             raise WrongContext(prob=self.problem_name,
                                method=method.__name__,
                                precondition="called inside the TIME_STEP_DEFINED context."
@@ -98,6 +97,8 @@ def _decorator_check_attributes(method):
 
         if not hasattr(self, 'problem_name'):
             setattr(self, 'problem_name', self.__class__.__name__)
+        if not hasattr(self, '_ensure_scope'):
+            setattr(self, '_ensure_scope', True)
         if not hasattr(self, '_initialized'):
             setattr(self, '_initialized', False)
         if not hasattr(self, '_time_step_defined'):
@@ -141,7 +142,18 @@ class CheckScopeMeta(type):
 
 
 def check_scope(baseclass):
-    """ Add a verification of the calling context of ICoCo methods. """
+    """ Add a verification of the calling context of ICoCo methods.
+
+    Notes
+    -----
+        Some attributes are dedicated to the metaclass, they may be defined in the class at __init__
+        to override default values:
+
+            - 'problem_name': name of the problem to solve, by default self.__class__.__name__.
+            - '_ensure_scope': to enable/disable scope checking, by default True.
+            - '_initialized': initialization status, by default False.
+            - '_time_step_defined': time step status, by default False.
+    """
     return CheckScopeMeta(baseclass.__name__, baseclass.__bases__, baseclass.__dict__)
 
 
@@ -204,7 +216,7 @@ class Problem(ABC, metaclass=MetaProblem):
     # section Problem
     # ******************************************************
 
-    def __init__(self, prob: str = None) -> None:  # type: ignore
+    def __init__(self, prob: str = None, ensure_scope: bool = True) -> None:  # type: ignore
         """Constructor.
 
         Notes
@@ -216,12 +228,16 @@ class Problem(ABC, metaclass=MetaProblem):
         ----------
         prob : str, optional
             problem name, by default None.
+        ensure_scope : bool, optional
+            set True to ensure context when calling ICoCo methods, by default True.
         """
         super().__init__()
 
         self._problem_name: str = self.__class__.__name__ if prob is None else prob
         """Name of the problem"""
 
+        self._ensure_scope = ensure_scope
+        """Verification status."""
         self._initialized = False
         """Initialized status."""
         self._time_step_defined = False
