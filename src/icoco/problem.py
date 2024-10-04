@@ -12,10 +12,31 @@ This module contains the API for ICoCo specifications
 """
 
 from abc import ABC, abstractmethod
+from enum import Enum
 from typing import List, Tuple
 
-from icoco.utils import ICOCO_MAJOR_VERSION, ValueType, MPIComm, medcoupling  # type: ignore
-from icoco.exception import NotImplementedMethod
+from .utils import MPIComm, medcoupling  # type: ignore
+from .exception import NotImplementedMethod
+from .version import get_icoco_version, get_version_int
+
+
+ICOCO_VERSION = get_icoco_version()
+"""ICoCo version as 'X.Y'."""
+ICOCO_MAJOR_VERSION = int(get_version_int()[0])
+"""ICoCo version major X."""
+ICOCO_MINOR_VERSION = int(get_version_int()[1])
+"""ICoCo version minor Y."""
+
+
+class ValueType(Enum):
+    """The various possible types for fields or scalar values."""
+
+    Double = 0
+    """Double scalar value or field type"""
+    Int = 1
+    """Int scalar value or field type"""
+    String = 2
+    """String scalar value or field type"""
 
 
 class Problem(ABC):
@@ -73,34 +94,6 @@ class Problem(ABC):
     # section Problem
     # ******************************************************
 
-    def __init__(self, prob: str = None) -> None:  # type: ignore
-        """Constructor.
-
-        Notes
-        -----
-            Internal set up and initialization of the code should not be done here,
-            but rather in initialize() method.
-
-        Parameters
-        ----------
-        prob : str, optional
-            problem name, by default None.
-        """
-        super().__init__()
-
-        self._problem_name: str = self.__class__.__name__ if prob is None else prob
-        """Name of the problem"""
-
-    @property
-    def problem_name(self) -> str:
-        """Returns the problem name.
-
-        Warning
-        -------
-            This is not part of ICoCo API.
-        """
-        return self._problem_name
-
     def setDataFile(self, datafile: str) -> None:
         """(Optional) Provide the relative path of a data file to be used by the code.
 
@@ -118,7 +111,8 @@ class Problem(ABC):
         WrongArgument
             exception if an invalid path is provided.
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="setDataFile")
+        raise NotImplementedMethod(prob=f"{self.__class__.__module__}.{self.__class__.__name__}",
+                                   method="setDataFile")
 
     def setMPIComm(self, mpicomm: MPIComm) -> None:
         """(Optional) Provide the MPI communicator to be used by the code for parallel computations.
@@ -139,7 +133,8 @@ class Problem(ABC):
         WrongArgument
             exception if an invalid path is provided.
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="setMPIComm")
+        raise NotImplementedMethod(prob=f"{self.__class__.__module__}.{self.__class__.__name__}",
+                                   method="setMPIComm")
 
     @abstractmethod
     def initialize(self) -> bool:
@@ -365,7 +360,8 @@ class Problem(ABC):
             meaning we shouldn't request this information while the computation of a new time
             step is in progress.
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="isStationary")
+        raise NotImplementedMethod(prob=f"{self.__class__.__module__}.{self.__class__.__name__}",
+                                   method="isStationary")
 
     def abortTimeStep(self) -> None:
         """(Optional) Abort the computation on the current time step.
@@ -380,7 +376,8 @@ class Problem(ABC):
             exception if called before initialize() or after terminate().
              exception if called outside the TIME_STEP_DEFINED context (see Problem documentation).
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="abortTimeStep")
+        raise NotImplementedMethod(prob=f"{self.__class__.__module__}.{self.__class__.__name__}",
+                                   method="abortTimeStep")
 
     def resetTime(self, time: float) -> None:
         """(Optional) Reset the current time of the Problem to a given value.
@@ -403,7 +400,8 @@ class Problem(ABC):
             exception if called before initialize() or after terminate().
             exception if called inside the TIME_STEP_DEFINED context (see Problem documentation)
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="resetTime")
+        raise NotImplementedMethod(prob=f"{self.__class__.__module__}.{self.__class__.__name__}",
+                                   method="resetTime")
 
     def iterateTimeStep(self) -> Tuple[bool, bool]:
         """(Optional) Perform a single iteration of computation inside the time step.
@@ -428,7 +426,8 @@ class Problem(ABC):
             exception if called before initialize() or after terminate().
             exception if called outside the TIME_STEP_DEFINED context (see Problem documentation)
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="iterateTimeStep")
+        raise NotImplementedMethod(prob=f"{self.__class__.__module__}.{self.__class__.__name__}",
+                                   method="iterateTimeStep")
 
     # ******************************************************
     # section Restorable
@@ -461,7 +460,8 @@ class Problem(ABC):
         WrongArgument
             exception if the method or label argument is invalid.
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="save")
+        raise NotImplementedMethod(prob=f"{self.__class__.__module__}.{self.__class__.__name__}",
+                                   method="save")
 
     def restore(self, label: int, method: str) -> None:
         """(Optional) Restore the state of the code.
@@ -491,7 +491,8 @@ class Problem(ABC):
         WrongArgument
             exception if the method or label argument is invalid.
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="restore")
+        raise NotImplementedMethod(prob=f"{self.__class__.__module__}.{self.__class__.__name__}",
+                                   method="restore")
 
     def forget(self, label: int, method: str) -> None:
         """(Optional) Discard a previously saved state of the code.
@@ -517,7 +518,8 @@ class Problem(ABC):
         WrongArgument
             exception if the method or label argument is invalid.
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="forget")
+        raise NotImplementedMethod(prob=f"{self.__class__.__module__}.{self.__class__.__name__}",
+                                   method="forget")
 
     # ******************************************************
     # section Field I/O.
@@ -536,7 +538,8 @@ class Problem(ABC):
         WrongContext
             exception if called before initialize() or after terminate().
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="getInputFieldsNames")
+        raise NotImplementedMethod(prob=f"{self.__class__.__module__}.{self.__class__.__name__}",
+                                   method="getInputFieldsNames")
 
     def getOutputFieldsNames(self) -> List[str]:
         """(Optional) Get the list of output fields that can be provided by the code.
@@ -551,7 +554,8 @@ class Problem(ABC):
         WrongContext
             exception if called before initialize() or after terminate().
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="getOutputFieldsNames")
+        raise NotImplementedMethod(prob=f"{self.__class__.__module__}.{self.__class__.__name__}",
+                                   method="getOutputFieldsNames")
 
     def getFieldType(self, name: str) -> ValueType:
         """(Optional) Get the type of a field managed by the code (input or output)
@@ -575,7 +579,8 @@ class Problem(ABC):
         WrongContext
             exception if called before initialize() or after terminate().
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="getFieldType")
+        raise NotImplementedMethod(prob=f"{self.__class__.__module__}.{self.__class__.__name__}",
+                                   method="getFieldType")
 
     def getMeshUnit(self) -> str:
         """(Optional) Get the (length) unit used to define the meshes supporting the fields.
@@ -590,7 +595,8 @@ class Problem(ABC):
         WrongContext
             exception if called before initialize() or after terminate().
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="getMeshUnit")
+        raise NotImplementedMethod(prob=f"{self.__class__.__module__}.{self.__class__.__name__}",
+                                   method="getMeshUnit")
 
     def getFieldUnit(self, name: str) -> str:
         """(Optional) Get the physical unit used for a given field.
@@ -612,7 +618,8 @@ class Problem(ABC):
         WrongContext
             exception if called before initialize() or after terminate().
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="getFieldUnit")
+        raise NotImplementedMethod(prob=f"{self.__class__.__module__}.{self.__class__.__name__}",
+                                   method="getFieldUnit")
 
     def getInputMEDDoubleFieldTemplate(self, name: str) -> medcoupling.MEDCouplingFieldDouble:
         """(Optional) Retrieve an empty shell for an input field. This shell can be filled by the
@@ -648,7 +655,8 @@ class Problem(ABC):
         WrongArgument
             exception if the field name is invalid.
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="getInputMEDDoubleFieldTemplate")
+        raise NotImplementedMethod(prob=self.__class__.__name__,
+                                   method="getInputMEDDoubleFieldTemplate")
 
     def setInputMEDDoubleField(self,
                                name: str,
@@ -679,7 +687,8 @@ class Problem(ABC):
             exception if the time property of 'afield' does not belong to the currently computed
             time step ]t, t + dt]
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="setInputMEDDoubleField")
+        raise NotImplementedMethod(prob=f"{self.__class__.__module__}.{self.__class__.__name__}",
+                                   method="setInputMEDDoubleField")
 
     def getOutputMEDDoubleField(self, name: str) -> medcoupling.MEDCouplingFieldDouble:
         """(Optional) Retrieve output data from the code in the form of a MEDDoubleField.
@@ -708,7 +717,8 @@ class Problem(ABC):
         WrongArgument
             exception if the field name ('name' parameter) is invalid.
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="getOutputMEDDoubleField")
+        raise NotImplementedMethod(prob=f"{self.__class__.__module__}.{self.__class__.__name__}",
+                                   method="getOutputMEDDoubleField")
 
     def updateOutputMEDDoubleField(self,
                                    name: str,
@@ -741,7 +751,8 @@ class Problem(ABC):
             exception if the field name ('name' parameter) is invalid.
             exception if the field object is inconsistent with the field being requested.
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="updateOutputMEDDoubleField")
+        raise NotImplementedMethod(prob=self.__class__.__name__,
+                                   method="updateOutputMEDDoubleField")
 
     def getInputMEDIntFieldTemplate(self, name: str) -> medcoupling.MEDCouplingFieldInt:
         """Similar to getInputMEDDoubleFieldTemplate() but for MEDIntField.
@@ -767,7 +778,8 @@ class Problem(ABC):
         WrongArgument
             exception if the field name is invalid.
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="getInputMEDIntFieldTemplate")
+        raise NotImplementedMethod(prob=self.__class__.__name__,
+                                   method="getInputMEDIntFieldTemplate")
 
     def setInputMEDIntField(self, name: str, afield: medcoupling.MEDCouplingFieldInt) -> None:
         """Similar to setInputMEDDoubleField() but for MEDIntField.
@@ -792,7 +804,8 @@ class Problem(ABC):
             exception if the time property of 'afield' does not belong to the currently computed
             time step ]t, t + dt]
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="setInputMEDIntField")
+        raise NotImplementedMethod(prob=f"{self.__class__.__module__}.{self.__class__.__name__}",
+                                   method="setInputMEDIntField")
 
     def getOutputMEDIntField(self, name: str) -> medcoupling.MEDCouplingFieldInt:
         """Similar to getOutputMEDDoubleField() but for MEDIntField.
@@ -818,7 +831,8 @@ class Problem(ABC):
         WrongArgument
             exception if the field name ('name' parameter) is invalid.
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="getOutputMEDIntField")
+        raise NotImplementedMethod(prob=f"{self.__class__.__module__}.{self.__class__.__name__}",
+                                   method="getOutputMEDIntField")
 
     def updateOutputMEDIntField(self,
                                 name: str,
@@ -844,7 +858,8 @@ class Problem(ABC):
             exception if the field name ('name' parameter) is invalid.
             exception if the field object is inconsistent with the field being requested.
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="updateOutputMEDIntField")
+        raise NotImplementedMethod(prob=f"{self.__class__.__module__}.{self.__class__.__name__}",
+                                   method="updateOutputMEDIntField")
 
     def getInputMEDStringFieldTemplate(self, name: str) -> medcoupling.MEDCouplingField:
         """Similar to getInputMEDDoubleFieldTemplate() but for MEDStringField.
@@ -874,7 +889,8 @@ class Problem(ABC):
         WrongArgument
             exception if the field name is invalid.
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="getInputMEDStringFieldTemplate")
+        raise NotImplementedMethod(prob=self.__class__.__name__,
+                                   method="getInputMEDStringFieldTemplate")
 
     def setInputMEDStringField(self, name: str, afield: medcoupling.MEDCouplingField) -> None:
         """Similar to setInputMEDDoubleField() but for MEDStringField.
@@ -903,7 +919,8 @@ class Problem(ABC):
             exception if the time property of 'afield' does not belong to the currently computed
             time step ]t, t + dt]
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="setInputMEDStringField")
+        raise NotImplementedMethod(prob=f"{self.__class__.__module__}.{self.__class__.__name__}",
+                                   method="setInputMEDStringField")
 
     def getOutputMEDStringField(self, name: str) -> medcoupling.MEDCouplingField:
         """Similar to getOutputMEDDoubleField() but for MEDStringField.
@@ -933,7 +950,8 @@ class Problem(ABC):
         WrongArgument
             exception if the field name ('name' parameter) is invalid.
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="getOutputMEDStringField")
+        raise NotImplementedMethod(prob=f"{self.__class__.__module__}.{self.__class__.__name__}",
+                                   method="getOutputMEDStringField")
 
     def updateOutputMEDStringField(self,
                                    name: str,
@@ -963,7 +981,8 @@ class Problem(ABC):
             exception if the field name ('name' parameter) is invalid.
             exception if the field object is inconsistent with the field being requested.
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="updateOutputMEDStringField")
+        raise NotImplementedMethod(prob=self.__class__.__name__,
+                                   method="updateOutputMEDStringField")
 
     def getMEDCouplingMajorVersion(self) -> int:
         """(Optional) Get MEDCoupling major version, if the code was built with MEDCoupling support.
@@ -975,7 +994,8 @@ class Problem(ABC):
         int
             the MEDCoupling major version number (typically 7, 8, 9, ...)
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="getMEDCouplingMajorVersion")
+        raise NotImplementedMethod(prob=self.__class__.__name__,
+                                   method="getMEDCouplingMajorVersion")
 
     def isMEDCoupling64Bits(self) -> bool:
         """(Optional) (Optional) Indicate whether the code was built with a 64-bits version of
@@ -989,7 +1009,8 @@ class Problem(ABC):
         bool
             True if it is 64-bits
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="isMEDCoupling64Bits")
+        raise NotImplementedMethod(prob=f"{self.__class__.__module__}.{self.__class__.__name__}",
+                                   method="isMEDCoupling64Bits")
 
     # ******************************************************
     # section Scalar values I/O
@@ -1009,7 +1030,8 @@ class Problem(ABC):
             exception if called before initialize() or after terminate().
         """
 
-        raise NotImplementedMethod(prob=self.problem_name, method="getInputValuesNames")
+        raise NotImplementedMethod(prob=f"{self.__class__.__module__}.{self.__class__.__name__}",
+                                   method="getInputValuesNames")
 
     def getOutputValuesNames(self) -> List[str]:
         """(Optional) Get the list of output scalars that can be provided by the code.
@@ -1024,7 +1046,8 @@ class Problem(ABC):
         WrongContext
             exception if called before initialize() or after terminate().
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="getOutputValuesNames")
+        raise NotImplementedMethod(prob=f"{self.__class__.__module__}.{self.__class__.__name__}",
+                                   method="getOutputValuesNames")
 
     def getValueType(self, name: str) -> ValueType:
         """(Optional)  Get the type of a scalar managed by the code (input or output)
@@ -1048,7 +1071,8 @@ class Problem(ABC):
         WrongContext
             exception if called before initialize() or after terminate().
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="getValueType")
+        raise NotImplementedMethod(prob=f"{self.__class__.__module__}.{self.__class__.__name__}",
+                                   method="getValueType")
 
     def getValueUnit(self, name: str) -> str:
         """(Optional) Get the physical unit used for a given value.
@@ -1070,7 +1094,8 @@ class Problem(ABC):
         WrongContext
             exception if called before initialize() or after terminate().
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="getValueUnit")
+        raise NotImplementedMethod(prob=f"{self.__class__.__module__}.{self.__class__.__name__}",
+                                   method="getValueUnit")
 
     def setInputDoubleValue(self, name: str, val: float) -> None:
         """(Optional) Provide the code with a scalar double data.
@@ -1091,7 +1116,8 @@ class Problem(ABC):
         WrongContext
             exception if called before initialize() or after terminate().
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="setInputDoubleValue")
+        raise NotImplementedMethod(prob=f"{self.__class__.__module__}.{self.__class__.__name__}",
+                                   method="setInputDoubleValue")
 
     def getOutputDoubleValue(self, name: str) -> float:
         """(Optional) Retrieve a scalar double value from the code.
@@ -1115,7 +1141,8 @@ class Problem(ABC):
         WrongContext
              exception if called before initialize() or after terminate().
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="getOutputDoubleValue")
+        raise NotImplementedMethod(prob=f"{self.__class__.__module__}.{self.__class__.__name__}",
+                                   method="getOutputDoubleValue")
 
     def setInputIntValue(self, name: str, val: int) -> None:
         """(Optional) Provide the code with a int data.
@@ -1136,7 +1163,8 @@ class Problem(ABC):
         WrongContext
             exception if called before initialize() or after terminate().
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="setInputIntValue")
+        raise NotImplementedMethod(prob=f"{self.__class__.__module__}.{self.__class__.__name__}",
+                                   method="setInputIntValue")
 
     def getOutputIntValue(self, name: str) -> int:
         """(Optional) Retrieve a int value from the code.
@@ -1160,7 +1188,8 @@ class Problem(ABC):
         WrongContext
              exception if called before initialize() or after terminate().
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="getOutputIntValue")
+        raise NotImplementedMethod(prob=f"{self.__class__.__module__}.{self.__class__.__name__}",
+                                   method="getOutputIntValue")
 
     def setInputStringValue(self, name: str, val: str) -> None:
         """(Optional) Provide the code with a string data.
@@ -1181,7 +1210,8 @@ class Problem(ABC):
         WrongContext
             exception if called before initialize() or after terminate().
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="setInputStringValue")
+        raise NotImplementedMethod(prob=f"{self.__class__.__module__}.{self.__class__.__name__}",
+                                   method="setInputStringValue")
 
     def getOutputStringValue(self, name: str) -> str:
         """(Optional) Retrieve a string value from the code.
@@ -1205,4 +1235,5 @@ class Problem(ABC):
         WrongContext
              exception if called before initialize() or after terminate().
         """
-        raise NotImplementedMethod(prob=self.problem_name, method="getOutputStringValue")
+        raise NotImplementedMethod(prob=f"{self.__class__.__module__}.{self.__class__.__name__}",
+                                   method="getOutputStringValue")

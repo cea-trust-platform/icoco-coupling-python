@@ -8,7 +8,6 @@ The official version can be found at the following URL:
 https://github.com/cea-trust-platform/icoco-coupling
 """
 
-from enum import Enum
 
 try:
     import medcoupling  # pylint: disable=unused-import
@@ -26,9 +25,12 @@ except ImportError:  # pragma: no cover
         class MEDCouplingField:  # pylint: disable=too-few-public-methods
             """dummy class for MEDCouplingField type hinting"""
 
-ICOCO_VERSION = "2.0"
-ICOCO_MAJOR_VERSION = 2
-ICOCO_MINOR_VERSION = 0
+
+try:
+    from mpi4py.MPI import Intracomm as MPIComm  # type: ignore  # pylint: disable=unused-import
+except ModuleNotFoundError:  # pragma: no cover
+    class MPIComm:  # pylint: disable=too-few-public-methods
+        """Basic class for type hinting when mi4py is not available"""
 
 
 class ICoCoMethods:  # pylint: disable=too-few-public-methods
@@ -67,19 +69,17 @@ class ICoCoMethods:  # pylint: disable=too-few-public-methods
     """All ICoCo methods"""
 
 
-class ValueType(Enum):
-    """The various possible types for fields or scalar values."""
+class ICoCoMethodContext:  # pylint: disable=too-few-public-methods
+    """Namespace to list all context restrictions for ICoCo methods."""
 
-    Double = 0
-    """Double scalar value or field type"""
-    Int = 1
-    """Int scalar value or field type"""
-    String = 2
-    """String scalar value or field type"""
+    BEFORE_INITIALIZE = ["setDataFile", "setMPIComm", "initialize"]
+    """Methods which must be called BEFORE ``initialize``."""
 
+    ONLY_INSIDE_TIME_STEP_DEFINED = ["solveTimeStep", "iterateTimeStep",
+                                     "validateTimeStep", "abortTimeStep"]
+    """Methods which must be called inside TIME_STEP_DEFINED context."""
 
-try:
-    from mpi4py.MPI import Intracomm as MPIComm  # type: ignore  # pylint: disable=unused-import
-except ModuleNotFoundError:  # pragma: no cover
-    class MPIComm:  # pylint: disable=too-few-public-methods
-        """Basic class for type hinting when mi4py is not available"""
+    ONLY_OUTSIDE_TIME_STEP_DEFINED = [  # "getStationaryMode", FIXME norme says it should be here
+        "terminate", "computeTimeStep", "initTimeStep", "setStationaryMode",
+        "isStationary", "resetTime", "save", "restore"]
+    """Methods which must be called outside TIME_STEP_DEFINED context."""

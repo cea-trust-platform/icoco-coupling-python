@@ -13,19 +13,12 @@ See :class:`icoco.problem.Problem` to start with.
 
 """
 
-import pathlib as _pathlib
-
-__version__ = (_pathlib.Path(__file__).parent.resolve() / "VERSION").read_text(
-    encoding="utf-8").strip()
-
 __copyright__ = '2023, CEA'
 __author__ = 'CEA'
 
-from .utils import (ICOCO_VERSION, ICOCO_MAJOR_VERSION, ICOCO_MINOR_VERSION,  # noqa: F401
-                    ValueType, medcoupling)  # noqa: F401
-
 from .exception import WrongContext, WrongArgument, NotImplementedMethod  # noqa: F401
+from .problem import (Problem, ValueType,  # noqa: F401
+                      ICOCO_VERSION, ICOCO_MAJOR_VERSION, ICOCO_MINOR_VERSION)  # noqa: F401
+from .version import get_version  # noqa: F401
 
-from .problem_server import ProblemClient, ServerManager  # noqa: F401
-from .problem_wrapper import ProblemWrapper  # noqa: F401
-from .problem import Problem  # noqa: F401
+__version__ = get_version()

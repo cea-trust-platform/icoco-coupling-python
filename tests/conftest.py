@@ -63,7 +63,7 @@ class SaveRestoreProblem(MinimalProblem):
 
     def restore(self, label: int, method: str) -> None:
         if (label, method) not in self._state:
-            raise icoco.WrongArgument(prob=self.problem_name,
+            raise icoco.WrongArgument(prob=self.__class__.__name__,
                                       method="restore",
                                       arg="(label, method)",
                                       condition=f"({label}, {method}) is not a known save state")
