@@ -21,7 +21,7 @@ See also [the ogirinal documentation](https://github.com/cea-trust-platform/icoc
 This package is available on [PyPi](https://pypi.org/project/icoco/), so to install a released version:
 
 ```sh
-python3 -m pip install icoco
+python3 -m pip install "icoco~=2.0.0"
 ```
 
 ## Developpement environment
@@ -59,4 +59,4 @@ See its [README](tests/README.md) for more details.
 ## Code documentation
 
 A basic sphinx documentation can be generated.
-See its [README](docs/README.md) for more details.
+See its [README](docs/sphinx/introduction.md) for more details.

@@ -1,5 +1,6 @@
 # environment folder
-environment-*/
+/environment-*/
+/venv*/
 
 # python files
 __pycache__
