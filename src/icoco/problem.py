@@ -15,7 +15,7 @@ from abc import ABC, abstractmethod
 from enum import Enum
 from typing import List, Tuple
 
-from .utils import MPIComm, medcoupling  # type: ignore
+#from .utils import MPIComm, medcoupling  # type: ignore
 from .exception import NotImplementedMethod
 from .version import get_icoco_version, get_version_int
 
@@ -114,7 +114,7 @@ class Problem(ABC):
         raise NotImplementedMethod(prob=f"{self.__class__.__module__}.{self.__class__.__name__}",
                                    method="setDataFile")
 
-    def setMPIComm(self, mpicomm: MPIComm) -> None:
+    def setMPIComm(self, mpicomm) -> None:
         """(Optional) Provide the MPI communicator to be used by the code for parallel computations.
 
         This method must be called before initialize(). The communicator should include all the
@@ -621,7 +621,7 @@ class Problem(ABC):
         raise NotImplementedMethod(prob=f"{self.__class__.__module__}.{self.__class__.__name__}",
                                    method="getFieldUnit")
 
-    def getInputMEDDoubleFieldTemplate(self, name: str) -> medcoupling.MEDCouplingFieldDouble:
+    def getInputMEDDoubleFieldTemplate(self, name: str) :
         """(Optional) Retrieve an empty shell for an input field. This shell can be filled by the
         caller and then be given to the code via setInputField(). The field has the MEDDoubleField
         format.
@@ -660,7 +660,7 @@ class Problem(ABC):
 
     def setInputMEDDoubleField(self,
                                name: str,
-                               afield: medcoupling.MEDCouplingFieldDouble) -> None:
+                               afield) -> None:
         """(Optional) Provide the code with input data in the form of a MEDDoubleField.
 
         The method getInputFieldTemplate(), if implemented, may be used first to prepare an empty
@@ -690,7 +690,7 @@ class Problem(ABC):
         raise NotImplementedMethod(prob=f"{self.__class__.__module__}.{self.__class__.__name__}",
                                    method="setInputMEDDoubleField")
 
-    def getOutputMEDDoubleField(self, name: str) -> medcoupling.MEDCouplingFieldDouble:
+    def getOutputMEDDoubleField(self, name: str) :
         """(Optional) Retrieve output data from the code in the form of a MEDDoubleField.
 
         Gets the output field corresponding to name from the code into the afield argument.
@@ -722,7 +722,7 @@ class Problem(ABC):
 
     def updateOutputMEDDoubleField(self,
                                    name: str,
-                                   afield: medcoupling.MEDCouplingFieldDouble) -> None:
+                                   afield) -> None:
         """(Optional) Update a previously retrieved output field.
 
         (New in version 2) This methods allows the code to implement a more efficient update of a
@@ -754,7 +754,7 @@ class Problem(ABC):
         raise NotImplementedMethod(prob=self.__class__.__name__,
                                    method="updateOutputMEDDoubleField")
 
-    def getInputMEDIntFieldTemplate(self, name: str) -> medcoupling.MEDCouplingFieldInt:
+    def getInputMEDIntFieldTemplate(self, name: str) :
         """Similar to getInputMEDDoubleFieldTemplate() but for MEDIntField.
 
         See Also
@@ -781,7 +781,7 @@ class Problem(ABC):
         raise NotImplementedMethod(prob=self.__class__.__name__,
                                    method="getInputMEDIntFieldTemplate")
 
-    def setInputMEDIntField(self, name: str, afield: medcoupling.MEDCouplingFieldInt) -> None:
+    def setInputMEDIntField(self, name: str, afield) -> None:
         """Similar to setInputMEDDoubleField() but for MEDIntField.
 
         See Also
@@ -807,7 +807,7 @@ class Problem(ABC):
         raise NotImplementedMethod(prob=f"{self.__class__.__module__}.{self.__class__.__name__}",
                                    method="setInputMEDIntField")
 
-    def getOutputMEDIntField(self, name: str) -> medcoupling.MEDCouplingFieldInt:
+    def getOutputMEDIntField(self, name: str) :
         """Similar to getOutputMEDDoubleField() but for MEDIntField.
 
         See Also
@@ -836,7 +836,7 @@ class Problem(ABC):
 
     def updateOutputMEDIntField(self,
                                 name: str,
-                                afield: medcoupling.MEDCouplingFieldInt) -> None:
+                                afield) -> None:
         """Similar to getInputMEDDoubleFieldTemplate() but for MEDStringField.
 
         See Also
@@ -861,7 +861,7 @@ class Problem(ABC):
         raise NotImplementedMethod(prob=f"{self.__class__.__module__}.{self.__class__.__name__}",
                                    method="updateOutputMEDIntField")
 
-    def getInputMEDStringFieldTemplate(self, name: str) -> medcoupling.MEDCouplingField:
+    def getInputMEDStringFieldTemplate(self, name: str):
         """Similar to getInputMEDDoubleFieldTemplate() but for MEDStringField.
 
         Warning
@@ -892,7 +892,7 @@ class Problem(ABC):
         raise NotImplementedMethod(prob=self.__class__.__name__,
                                    method="getInputMEDStringFieldTemplate")
 
-    def setInputMEDStringField(self, name: str, afield: medcoupling.MEDCouplingField) -> None:
+    def setInputMEDStringField(self, name: str, afield) -> None:
         """Similar to setInputMEDDoubleField() but for MEDStringField.
 
         Warning
@@ -922,7 +922,7 @@ class Problem(ABC):
         raise NotImplementedMethod(prob=f"{self.__class__.__module__}.{self.__class__.__name__}",
                                    method="setInputMEDStringField")
 
-    def getOutputMEDStringField(self, name: str) -> medcoupling.MEDCouplingField:
+    def getOutputMEDStringField(self, name: str):
         """Similar to getOutputMEDDoubleField() but for MEDStringField.
 
         Warning
@@ -955,7 +955,7 @@ class Problem(ABC):
 
     def updateOutputMEDStringField(self,
                                    name: str,
-                                   afield: medcoupling.MEDCouplingField) -> None:
+                                   afield) -> None:
         """Similar to getInputMEDDoubleFieldTemplate() but for MEDStringField.
 
         Warning
