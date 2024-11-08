@@ -26,7 +26,7 @@ except ImportError:  # pragma: no cover
             """dummy class for MEDCouplingField type hinting"""
 
 
-try:  # pragma: no cover
+try:
     import mpi4py
     mpi4py.rc.initialize = False
     mpi4py.rc.finalize = False

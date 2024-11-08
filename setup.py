@@ -150,6 +150,7 @@ setup(
     # Similar to `install_requires` above, these must be valid existing
     # projects.
     extras_require={  # Optional
+        "mpi": ["mpi4py",],
         "docs": ["sphinx-rtd-theme==1.1.1",
                  "sphinx>=5.0.0",
                  "myst-parser",
