@@ -70,7 +70,7 @@ class ICoCoMethods:  # pylint: disable=too-few-public-methods
                 "setInputStringValue", "getOutputStringValue"]
     """ICoco methods of section Scalar values I/O"""
 
-    ALL = ['GetICoCoMajorVersion'] + PROBLEM + TIME_STEP + RESTORE + IO_FIELD + IO_VALUE
+    ALL = ["GetICoCoMajorVersion"] + PROBLEM + TIME_STEP + RESTORE + IO_FIELD + IO_VALUE
     """All ICoCo methods"""
 
 
@@ -82,7 +82,8 @@ class ICoCoMethodContext:  # pylint: disable=too-few-public-methods
 
     ONLY_AFTER_INITIALIZE = [name for name in ICoCoMethods.ALL
                              if name not in ["setDataFile", "setMPIComm", "initialize",
-                                             "getMEDCouplingMajorVersion", "isMEDCoupling64Bits"]]
+                                             "getMEDCouplingMajorVersion", "isMEDCoupling64Bits",
+                                             "GetICoCoMajorVersion"]]
     """Methods which must be called only AFTER ``initialize``."""
 
     ONLY_INSIDE_TIME_STEP_DEFINED = ["solveTimeStep", "iterateTimeStep",
