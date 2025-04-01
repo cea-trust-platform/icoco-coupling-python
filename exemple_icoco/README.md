@@ -17,7 +17,7 @@ In each channel we solve for enthalpy convection with a source term linear in th
 For the plate, we have a kind of 0D model:
 
 ```math
-C \dfrac{\partial T_s}{\partial t} = h_1 (T_f1 - T_s) + h_2 (T_f2 - T_s) + P
+C \dfrac{\partial T_s}{\partial t} = h_1 (T_{f1} - T_s) + h_2 (T_{f2} - T_s) + P
 ```
 
 Here we have:
@@ -41,7 +41,7 @@ $H_i$ is provided as a function of $T_{fi}$. $h_1$ and $h_2$ are provided as fun
 In order to solve for the stationary fluid temperature, we iterate on:
 
 ```math
-H_i^{j} = H_i^{j-1} + dz / G_i * h_i^{j} (T_s^{j} - T_{fi}^{j})
+H_i^{j} = H_i^{j-1} + \dfrac{dz}{G_i} h_i^{j} (T_s^{j} - T_{fi}^{j})
 ```
 
 Here $dz$ is the cell size (taken constant) and the superscript $j$ stands for the cell index.
@@ -51,7 +51,7 @@ The function providing $H_i$ as a function of $T_{fi}$ is then inverted using a 
 The stationary plate temperature is computed using, in each cell:
 
 ```math
-T_s = \dfrac{h_1 T_f1 + h_2 T_f2 + P}{h_1 + h_2}
+T_s = \dfrac{h_1 T_{f1} + h_2 T_{f2} + P}{h_1 + h_2}
 ```
 
 As $h_1$ and $h_2$ depend on $T_s$, iterations are needed.
@@ -68,12 +68,12 @@ In transient mode, we use an explicit time-scheme for the fluid:
 
 Here $n$ stands for the time-step number and $dt$ is the time-step size. Because we use the current fluid temperature in the source term, iterations are needed.
 
-Similarly, we write for the plate:
+Similarly, we write for the plate, in each cell:
 
 ```math
-C \dfrac{T_s^{j, n+1} - T_s^{j, n}}{dt} = h_1^{j, n+1} (T_f1^{j, n+1} - T_s^{j, n+1}) + h_2^{j, n+1} (T_f2^{j, n+1} - T_s^{j, n+1}) + P
+C \dfrac{T_s^{n+1} - T_s^{n}}{dt} = h_1^{n+1} (T_{f1}^{n+1} - T_s^{n+1}) + h_2^{n+1} (T_{f2}^{n+1} - T_s^{n+1}) + P
 ```
 
-Because in the source term $h_i$ depends on the plate temperature, and because we want to use the current plate temperature to compute it, iterations are needed.
+Because in the source term, $h_i$ depends on the plate temperature, and because we want to use the current plate temperature to compute it, iterations are needed.
 
 In order to get the coupled solution, fluid and solid are solved iteratively until convergence.
