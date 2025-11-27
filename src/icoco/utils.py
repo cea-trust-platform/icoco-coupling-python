@@ -26,11 +26,11 @@ except ImportError:  # pragma: no cover
             """dummy class for MEDCouplingField type hinting"""
 
 
-try:
-    from mpi4py.MPI import Intracomm as MPIComm  # type: ignore  # pylint: disable=unused-import
-except ModuleNotFoundError:  # pragma: no cover
-    class MPIComm:  # pylint: disable=too-few-public-methods
-        """Basic class for type hinting when mi4py is not available"""
+# try:
+#     from mpi4py.MPI import Intracomm as MPIComm  # type: ignore  # pylint: disable=unused-import
+# except ModuleNotFoundError:  # pragma: no cover
+#     class MPIComm:  # pylint: disable=too-few-public-methods
+#         """Basic class for type hinting when mi4py is not available"""
 
 
 class ICoCoMethods:  # pylint: disable=too-few-public-methods

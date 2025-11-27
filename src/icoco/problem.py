@@ -15,7 +15,8 @@ from abc import ABC, abstractmethod
 from enum import Enum
 from typing import List, Tuple
 
-from .utils import MPIComm, medcoupling  # type: ignore
+# from .utils import MPIComm, medcoupling  # type: ignore
+from .utils import medcoupling  # type: ignore
 from .exception import NotImplementedMethod
 from .version import get_icoco_version, get_version_int
 
@@ -114,7 +115,7 @@ class Problem(ABC):
         raise NotImplementedMethod(prob=f"{self.__class__.__module__}.{self.__class__.__name__}",
                                    method="setDataFile")
 
-    def setMPIComm(self, mpicomm: MPIComm) -> None:
+    def setMPIComm(self, mpicomm: 'MPIComm') -> None:  # noqa: F821
         """(Optional) Provide the MPI communicator to be used by the code for parallel computations.
 
         This method must be called before initialize(). The communicator should include all the
