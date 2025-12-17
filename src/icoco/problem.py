@@ -10,15 +10,25 @@ https://github.com/cea-trust-platform/icoco-coupling
 
 This module contains the API for ICoCo specifications
 """
-
+from __future__ import annotations
 from abc import ABC, abstractmethod
 from enum import Enum
-from typing import List, Tuple
+from typing import TYPE_CHECKING, List, Tuple
 
-# from .utils import MPIComm, medcoupling  # type: ignore
-from .utils import medcoupling  # type: ignore
 from .exception import NotImplementedMethod
 from .version import get_icoco_version, get_version_int
+
+
+if TYPE_CHECKING:  # pragma: no cover
+    class medcoupling:  # pylint: disable=too-few-public-methods, invalid-name
+        """dummy class for type hinting"""
+        class MEDCouplingFieldDouble:  # pylint: disable=too-few-public-methods
+            """dummy class for MEDCouplingFieldDouble type hinting"""
+        class MEDCouplingFieldInt:  # pylint: disable=too-few-public-methods
+            """dummy class for MEDCouplingFieldInt type hinting"""
+        class MEDCouplingField:  # pylint: disable=too-few-public-methods
+            """dummy class for MEDCouplingField type hinting"""
+    from mpi4py.MPI import Intracomm as MPIComm  # type: ignore  # pylint: disable=unused-import
 
 
 ICOCO_VERSION = get_icoco_version()
@@ -115,7 +125,7 @@ class Problem(ABC):
         raise NotImplementedMethod(prob=f"{self.__class__.__module__}.{self.__class__.__name__}",
                                    method="setDataFile")
 
-    def setMPIComm(self, mpicomm: 'MPIComm') -> None:  # noqa: F821
+    def setMPIComm(self, mpicomm: MPIComm) -> None:  # noqa: F821
         """(Optional) Provide the MPI communicator to be used by the code for parallel computations.
 
         This method must be called before initialize(). The communicator should include all the
