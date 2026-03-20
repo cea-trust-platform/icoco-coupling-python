@@ -11,9 +11,9 @@ Practically ICoCo is provided as a main abstract C++ class (ICoCo::Problem) that
 to derive to implement the norm. This can be only a partial implementation as some methods
 are not relevant to all the codes (especially the I/O methods of the API).
 
-This package implements the abstract class {class}`icoco.problem.Problem` in Python following the
+This package implements the abstract class `icoco.problem.Problem` in Python following the
 specifications of the c++ version.
 
-The Python implementation proposed is based on {mod}`medcoupling` implementation for fields and {mod}`mpi4py` for MPI
+The Python implementation proposed is based on `medcoupling` implementation for fields and `mpi4py` for MPI
 communication. Nevertheless, it is possible to use other implementation of such concepts within this
 package.
